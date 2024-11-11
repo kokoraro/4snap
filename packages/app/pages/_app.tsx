@@ -6,6 +6,7 @@ import Layout from "../components/Layout";
 import { Toaster } from "react-hot-toast";
 import { Router } from "next/router";
 import nProgress from "nprogress";
+import "../styles/ngProgress.css";
 
 // nprogress loader
 Router.events.on("routeChangeStart", nProgress.start);
