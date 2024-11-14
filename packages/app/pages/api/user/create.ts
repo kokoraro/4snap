@@ -1,7 +1,7 @@
 import { CatchErrors } from "../middlewares/error";
 import UserController from "../controller/user";
 import { NextApiRequest, NextApiResponse } from "next";
-import { passageAuthMiddleware } from "../middlewares/auth";
+import { isLoggedIn } from "../middlewares/auth";
 import dbConnect from "../config/mongodb";
 
 const userController = new UserController();
@@ -13,4 +13,4 @@ const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default passageAuthMiddleware(CatchErrors(createUser));
+export default isLoggedIn(CatchErrors(createUser));
