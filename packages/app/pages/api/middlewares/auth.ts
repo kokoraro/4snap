@@ -6,16 +6,31 @@ import { SettingsModel, UserModel } from "../model";
 import { isEmpty } from "../../../util";
 import dbConnect from "../config/mongodb";
 
-const passageConfig = {
+let passage = new Passage({
   appID: process.env.PASSAGE_APP_ID,
-};
+  apiKey: ENV.passageApiKey,
+  authStrategy: "HEADER",
+});
 
-let passage = new Passage(passageConfig);
-
-export function passageAuthMiddleware(handler: NextApiHandler) {
+export function isLoggedIn(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      let userID = await passage.authenticateRequest(req);
+      const token = req.headers["psg_auth_token"];
+      console.log({ token });
+      if (isEmpty(token)) {
+        return res.status(401).json({
+          errorStatus: true,
+          code: "--auth/authorization-token-notfound",
+          message: `Authorization header expected a token but got none.`,
+        });
+      }
+
+      const passageReq = {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      };
+      let userID = await passage.authenticateRequest(passageReq);
       if (isEmpty(userID) === true) {
         return res.status(401).json({
           errorStatus: true,
@@ -24,19 +39,45 @@ export function passageAuthMiddleware(handler: NextApiHandler) {
         });
       }
       req["userId"] = userID;
-
       await handler(req, res);
     } catch (e: any) {
-      console.error(`invalid passage token: ${e?.message}`);
+      console.log(e);
+      console.error(`invalid qwik token: ${e?.message}`);
       return res.status(401).json({
         errorStatus: true,
         code: "--auth/invalid-token",
         error: e,
-        message: `Passage Authorization token is invalid.`,
+        message: `Authorization token is invalid.`,
       });
     }
   };
 }
+
+// export function passageAuthMiddleware(handler: NextApiHandler) {
+//   return async (req: NextApiRequest, res: NextApiResponse) => {
+//     try {
+//       let userID = await passage.authenticateRequest(req);
+//       if (isEmpty(userID) === true) {
+//         return res.status(401).json({
+//           errorStatus: true,
+//           code: "--auth/unauthorised",
+//           message: `Unauthorised user.`,
+//         });
+//       }
+//       req["userId"] = userID;
+
+//       await handler(req, res);
+//     } catch (e: any) {
+//       console.error(`invalid passage token: ${e?.message}`);
+//       return res.status(401).json({
+//         errorStatus: true,
+//         code: "--auth/invalid-token",
+//         error: e,
+//         message: `Passage Authorization token is invalid.`,
+//       });
+//     }
+//   };
+// }
 
 export function isQwikUserLoggedIn(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
