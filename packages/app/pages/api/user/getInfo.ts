@@ -1,7 +1,7 @@
 import { CatchErrors } from "../middlewares/error";
 import UserController from "../controller/user";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isQwikUserLoggedIn, passageAuthMiddleware } from "../middlewares/auth";
+import { isLoggedIn, isQwikUserLoggedIn } from "../middlewares/auth";
 import dbConnect from "../config/mongodb";
 
 const userController = new UserController();
@@ -13,4 +13,4 @@ const getUserInfo = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default passageAuthMiddleware(CatchErrors(getUserInfo));
+export default isLoggedIn(CatchErrors(getUserInfo));
