@@ -16,8 +16,9 @@ import {
   retrieveInAppCommands,
 } from "../../http";
 import { HandleCommandResponse } from "../../util/response";
+import isAuthenticated from "../../util/isAuthenticated";
 
-export default function Commands({ isAuthorized }) {
+export default function Commands() {
   const isReady = useIsReady();
   const router = useRouter();
   const [allCmds, setAllCmds] = useState([]);
@@ -27,7 +28,6 @@ export default function Commands({ isAuthorized }) {
   const getCommandQuery = useQuery({
     queryFn: async () => await retrieveInAppCommands(),
     queryKey: ["retrieveInAppCommands"],
-    enabled: isAuthorized,
   });
   const createMeetingMutation = useMutation(async (data: any) =>
     createInAppCommands(data)
@@ -36,9 +36,13 @@ export default function Commands({ isAuthorized }) {
     deleteInAppCommands(data)
   );
 
-  if (!isAuthorized) {
-    router.push("/auth");
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("psg_auth_token");
+    const isAuthorized = isAuthenticated(token);
+    if (!isAuthorized) {
+      router.push("/auth");
+    }
+  });
 
   useEffect(() => {
     if (
