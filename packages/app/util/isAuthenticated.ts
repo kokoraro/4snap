@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 import { isEmpty } from ".";
 
 const clearLocalStorage = () => {
-  localStorage.removeItem("authToken");
+  localStorage.removeItem("psg_auth_token");
   localStorage.removeItem("userData");
 };
 
@@ -21,8 +21,8 @@ function isAuthenticated(token: string) {
 
     return true;
   } catch (error) {
-    console.error(`Error verifying jwt token: ${error}`);
-    clearLocalStorage();
+    console.error(`Error verifying passage token: ${error}`);
+    // clearLocalStorage();
     return false;
   }
 }
