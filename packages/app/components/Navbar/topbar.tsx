@@ -36,7 +36,7 @@ function TopBar() {
   const handleLogout = () => {
     localStorage.removeItem("userData");
     localStorage.removeItem("authToken");
-    location.href = "/auth/login";
+    location.href = "/auth";
   };
 
   return (
