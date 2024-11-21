@@ -1,6 +1,7 @@
 import Passage from "@passageidentity/passage-node";
 import ENV from "../pages/api/config/env";
 
+// this is meant for authenticating with server component.
 export default async function serverPassageAuth(context) {
   const passage = new Passage({
     appID: ENV.passageAppId,
@@ -21,7 +22,12 @@ export default async function serverPassageAuth(context) {
   } catch (error) {
     // authentication failed
     console.log(`Authentication failed: ${error.message}`);
-    location.href = "/auth";
-    return { props: { isAuthorized: false } };
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/auth",
+      },
+      props: { isAuthorized: false },
+    };
   }
 }
