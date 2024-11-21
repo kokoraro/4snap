@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { getUserInfo } from "../../http";
 import { HandleUserResponse } from "../../util/response";
-import serverPassageAuth from "../../util/serverPassageAuth";
+import isAuthenticated from "../../util/isAuthenticated";
 
 export default function Dashboard({ isAuthorized }) {
   const isReady = useIsReady();
@@ -17,9 +17,13 @@ export default function Dashboard({ isAuthorized }) {
     enabled: isAuthorized,
   });
 
-  if (!isAuthorized) {
-    router.push("/auth");
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("psg_auth_token");
+    const isAuthorized = isAuthenticated(token);
+    if (!isAuthorized) {
+      router.push("/auth");
+    }
+  });
 
   useEffect(() => {
     if (
@@ -47,10 +51,4 @@ export default function Dashboard({ isAuthorized }) {
       )}
     </MainDashboardLayout>
   );
-}
-
-export async function getServerSideProps(context) {
-  // getServerSideProps runs server-side only and will never execute on the client browser
-  // this allows the safe use of a private Passage API Key
-  return await serverPassageAuth(context);
 }
