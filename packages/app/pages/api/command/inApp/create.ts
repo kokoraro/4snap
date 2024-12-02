@@ -1,6 +1,6 @@
 import { CatchErrors } from "../../middlewares/error";
 import { NextApiRequest, NextApiResponse } from "next";
-import { passageAuthMiddleware } from "../../middlewares/auth";
+import { isLoggedIn } from "../../middlewares/auth";
 import dbConnect from "../../config/mongodb";
 import CommandController from "../../controller/commands";
 
@@ -13,4 +13,4 @@ const createInAppCmd = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default passageAuthMiddleware(CatchErrors(createInAppCmd));
+export default isLoggedIn(CatchErrors(createInAppCmd));
