@@ -5,3 +5,8 @@ export const CreateCliAndInAppCmdSchema = Joi.object({
   command: Joi.string().required(),
   public: Joi.boolean().optional(),
 });
+
+export const DeleteCliAndInAppCmdSchema = Joi.object({
+  id: Joi.string().optional(),
+  name: Joi.string().optional(),
+});
