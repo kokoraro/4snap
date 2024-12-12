@@ -11,9 +11,8 @@ const $http: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    Authorization: `Bearer ${
-      typeof window !== "undefined" &&
-      JSON.parse(localStorage.getItem("authToken"))
+    psg_auth_token: `${
+      typeof window !== "undefined" && localStorage.getItem("psg_auth_token")
     }`,
   },
   withCredentials: true,
@@ -22,7 +21,10 @@ const $http: AxiosInstance = axios.create({
 $http.interceptors.request.use((config: any) => {
   // If auth-token is available, add it to the Axios API header
   if (hasCookie("auth-token", {})) {
-    config.headers["Authorization"] = `Bearer ${getCookie("auth-token", {})}`;
+    config.headers["psg_auth_token"] = `Bearer ${getCookie(
+      "psg_auth_token",
+      {}
+    )}`;
   }
 
   return config;
