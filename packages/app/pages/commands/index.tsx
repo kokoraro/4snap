@@ -7,7 +7,7 @@ import { Spinner } from "../../components/Loader";
 import { CgSpinner } from "react-icons/cg";
 import { AiFillDelete } from "react-icons/ai";
 import { BiCopy } from "react-icons/bi";
-import { copyToClipboard, isEmpty } from "../../util";
+import { copyToClipboard, isEmpty, isValidCliCommand } from "../../util";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import {
@@ -71,7 +71,10 @@ function Commands() {
         response,
         () => createCommandMutation.reset(),
         () => {},
-        () => getCommandQuery.refetch()
+        () => {
+          setIsModalOpen(false);
+          getCommandQuery.refetch();
+        }
       );
     }
   }, [createCommandMutation.data]);
@@ -99,6 +102,10 @@ function Commands() {
     const { name, commands } = inpData;
     if (isEmpty(name) || isEmpty(commands)) {
       toast.error("some fields are empty.");
+      return;
+    }
+    if (!isValidCliCommand(commands)) {
+      toast.error("Invalid command.");
       return;
     }
     createCommandMutation.mutate({ name, command: commands });
@@ -160,59 +167,69 @@ function Commands() {
           </div>
         </div>
       )}
-      <Modal isBlurBg isOpen={isModalOpen} showCloseIcon onClose={toggleModal}>
-        <div className="w-full h-full flex flex-col items-center justify-center">
-          <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
-            <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
-              <p className="text-white-100 text-[18px] pp-SB">
-                Create New Command
-              </p>
-            </div>
-            <br />
-            <div className="w-full px-3 flex flex-col items-start justify-start mb-3">
-              <input
-                type="text"
-                className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 rounded-md"
-                placeholder="Command Name"
-                maxLength={30}
-                onChange={(e) =>
-                  setInpData((prev) => ({ ...prev, ["name"]: e.target.value }))
-                }
-                defaultValue={inpData.name}
-              />
+      {isModalOpen && (
+        <Modal
+          isBlurBg
+          isOpen={isModalOpen}
+          showCloseIcon
+          onClose={toggleModal}
+        >
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
+              <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
+                <p className="text-white-100 text-[18px] pp-SB">
+                  Create New Command
+                </p>
+              </div>
               <br />
-              <textarea
-                className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 rounded-md"
-                placeholder={`commands separated by comma eg "mkdir test, cd test, code ." `}
-                maxLength={30}
-                rows={3}
-                cols={10}
-                onChange={(e) =>
-                  setInpData((prev) => ({
-                    ...prev,
-                    ["commands"]: e.target.value,
-                  }))
-                }
-                defaultValue={inpData.commands}
-              />
-              <br />
-              <button
-                className="w-full mt-3 px-4 py-2 rounded-md bg-blue-300 text-white-100 pp-SB text-[14px]"
-                disabled={createCommandMutation.isLoading}
-                onClick={createCommand}
-              >
-                {createCommandMutation.isLoading ? (
-                  <div className="w-full flex items-center justify-center gap-4">
-                    <Spinner color="#fff" /> Creating
-                  </div>
-                ) : (
-                  "Create Command"
-                )}
-              </button>
+              <div className="w-full px-3 flex flex-col items-start justify-start mb-3">
+                <input
+                  type="text"
+                  className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 font-mono rounded-md"
+                  placeholder="Command Name"
+                  maxLength={30}
+                  onChange={(e) =>
+                    setInpData((prev) => ({
+                      ...prev,
+                      ["name"]: e.target.value,
+                    }))
+                  }
+                  defaultValue={inpData.name}
+                />
+                <br />
+                <textarea
+                  className="w-full px-3 py-3 outline-none text-[12px] bg-dark-100 text-white-100 font-mono rounded-md"
+                  placeholder={`commands separated by comma eg "mkdir test, cd test, code ." `}
+                  maxLength={100}
+                  rows={3}
+                  cols={10}
+                  onChange={(e) =>
+                    setInpData((prev) => ({
+                      ...prev,
+                      ["commands"]: e.target.value,
+                    }))
+                  }
+                  defaultValue={inpData.commands}
+                />
+                <br />
+                <button
+                  className="w-full mt-3 px-4 py-2 rounded-md bg-blue-300 text-white-100 pp-SB text-[14px]"
+                  disabled={createCommandMutation.isLoading}
+                  onClick={createCommand}
+                >
+                  {createCommandMutation.isLoading ? (
+                    <div className="w-full flex items-center justify-center gap-4">
+                      <Spinner color="#fff" /> Creating
+                    </div>
+                  ) : (
+                    "Create Command"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </MainDashboardLayout>
   );
 }

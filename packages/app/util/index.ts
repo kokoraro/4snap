@@ -49,45 +49,6 @@ export const isOnlyNumbers = (string: string) => {
   return isNum;
 };
 
-export function splitThread(
-  max_char: number,
-  content: string
-): { id: number; value: string }[] {
-  if (content.length === 0) return [{ id: 0, value: content }];
-  const splittedThread = [];
-  let count = 0;
-  if (content.length > max_char) {
-    for (let i = 0; i < content.length; i += max_char) {
-      const sliced = content.slice(i, max_char + i);
-      splittedThread.push({ id: count, value: sliced });
-      count += 1;
-    }
-    return splittedThread;
-  }
-  splittedThread.push({ id: 0, value: content });
-  return splittedThread;
-}
-
-export function replaceTagsWithNewLine(text: string): string {
-  return text.replaceAll(/<\/div>|<br \/>|<br>|<div>/gi, "\n");
-}
-
-export function formatStringToMarkdown(content) {
-  // const linkRegex = /(https?:\/\/[^\s]+)/g;
-  const maxShowText = 400;
-  const imageRegex =
-    /(https?:\/\/[^\s]+\.(?:png|jpg|jpeg|gif|webp)(\?[^\s]+)?)/gi;
-
-  const matchAllImageUrl = content.match(imageRegex) || [];
-  const slicedContent =
-    content.length > maxShowText
-      ? content.slice(0, maxShowText) + "......."
-      : content;
-  let firstImage = matchAllImageUrl[0] ?? "";
-  const finalContent = `${slicedContent}`;
-  return { finalContent, availableImage: firstImage };
-}
-
 export const copyToClipboard = (content: string) => {
   navigator && navigator.clipboard.writeText(content);
 };
@@ -100,4 +61,9 @@ export function genRandNum(len: number = 10) {
     generated += char[rand];
   }
   return generated;
+}
+
+export function isValidCliCommand(commandString) {
+  const invalidCharacters = /[!*±%^()+\[\]{}\\\/|<>~]|&{2,}|\s&|\s&&\s/g;
+  return !invalidCharacters.test(commandString);
 }
