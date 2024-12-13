@@ -7,13 +7,12 @@ const withAuth = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
     const router = useRouter();
 
     useEffect(() => {
-      const token = localStorage.getItem("authToken");
-      // const isLoggedIn = isAuthenticated(token);
-      const isLoggedIn = true;
+      const token = localStorage.getItem("psg_auth_token");
+      const isLoggedIn = isAuthenticated(token);
       if (!isLoggedIn) {
-        router.push("/auth/login");
+        router.push("/auth");
       }
-    }, []);
+    });
 
     return <WrappedComponent {...props} />;
   };

@@ -8,13 +8,13 @@ const withoutAuth = <P extends {}>(
   const Wrapper: React.FC<P> = (props) => {
     const router = useRouter();
     useEffect(() => {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("psg_auth_token");
       const isLoggedIn = isAuthenticated(token);
 
       if (isLoggedIn) {
         router.push("/dashboard");
       }
-    }, []);
+    });
 
     return <WrappedComponent {...props} />;
   };
