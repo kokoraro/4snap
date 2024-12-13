@@ -118,16 +118,6 @@ module.exports = {
                     600: "#e82a4f",
                 },
             },
-            fontFamily: {
-                "pp-eb": ["Poppins-ExtraBold"],
-                "pp-rg": ["Poppins-Regular"],
-                "pp-sb": ["Poppins-SemiBold"],
-            },
-        },
-        fontFamily: {
-            "pp-eb": ["Poppins-ExtraBold"],
-            "pp-rg": ["Poppins-Regular"],
-            "pp-sb": ["Poppins-SemiBold"],
         },
     },
     plugins: [],

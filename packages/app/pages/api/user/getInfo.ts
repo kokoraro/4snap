@@ -1,7 +1,7 @@
 import { CatchErrors } from "../middlewares/error";
 import UserController from "../controller/user";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isLoggedIn, isQwikUserLoggedIn } from "../middlewares/auth";
+import { isLoggedIn } from "../middlewares/auth";
 import dbConnect from "../config/mongodb";
 
 const userController = new UserController();
