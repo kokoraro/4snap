@@ -15,8 +15,9 @@ let passage = new Passage({
 export function isLoggedIn(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      const token = req.headers["psg_auth_token"];
-      console.log({ token });
+      const token =
+        req.headers["psg_auth_token"] ?? req.cookies["psg_auth_token"];
+
       if (isEmpty(token)) {
         return res.status(401).json({
           errorStatus: true,
@@ -79,7 +80,7 @@ export function isLoggedIn(handler: NextApiHandler) {
 //   };
 // }
 
-export function isQwikUserLoggedIn(handler: NextApiHandler) {
+export function isCliUserLoggedIn(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     await dbConnect();
     try {
