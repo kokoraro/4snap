@@ -7,7 +7,7 @@ import { Spinner } from "../../components/Loader";
 import { CgSpinner } from "react-icons/cg";
 import { AiFillDelete } from "react-icons/ai";
 import { BiCopy } from "react-icons/bi";
-import { copyToClipboard } from "../../util";
+import { copyToClipboard, isEmpty } from "../../util";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import {
@@ -17,32 +17,30 @@ import {
 } from "../../http";
 import { HandleCommandResponse } from "../../util/response";
 import isAuthenticated from "../../util/isAuthenticated";
+import withAuth from "../../util/withAuth";
+import Modal from "../../components/Modal";
 
-export default function Commands() {
+function Commands() {
   const isReady = useIsReady();
-  const router = useRouter();
   const [allCmds, setAllCmds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cmdName, setCmdName] = useState("");
+  const [inpData, setInpData] = useState({
+    name: "",
+    commands: "",
+  });
   const [loadingStack, setLoadingStack] = useState<{ id: string }[]>([]);
   const getCommandQuery = useQuery({
     queryFn: async () => await retrieveInAppCommands(),
     queryKey: ["retrieveInAppCommands"],
   });
-  const createMeetingMutation = useMutation(async (data: any) =>
+  const createCommandMutation = useMutation(async (data: any) =>
     createInAppCommands(data)
   );
-  const deleteMeetingMutation = useMutation(async (data: any) =>
+  const deleteCommandMutation = useMutation(async (data: any) =>
     deleteInAppCommands(data)
   );
 
-  useEffect(() => {
-    const token = localStorage.getItem("psg_auth_token");
-    const isAuthorized = isAuthenticated(token);
-    if (!isAuthorized) {
-      router.push("/auth");
-    }
-  });
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   useEffect(() => {
     if (
@@ -56,22 +54,59 @@ export default function Commands() {
         () => {},
         (data) => {
           setAllCmds(data);
+          console.log(data);
         }
       );
     }
   }, [getCommandQuery.data]);
 
+  useEffect(() => {
+    if (
+      typeof createCommandMutation.data !== "undefined" ||
+      createCommandMutation.error !== null
+    ) {
+      const { data } = createCommandMutation;
+      const response = data;
+      HandleCommandResponse(
+        response,
+        () => createCommandMutation.reset(),
+        () => {},
+        () => getCommandQuery.refetch()
+      );
+    }
+  }, [createCommandMutation.data]);
+
+  useEffect(() => {
+    if (
+      typeof deleteCommandMutation.data !== "undefined" ||
+      deleteCommandMutation.error !== null
+    ) {
+      const { data } = deleteCommandMutation;
+      const response = data;
+      HandleCommandResponse(
+        response,
+        () => {
+          deleteCommandMutation.reset();
+          setLoadingStack([]);
+        },
+        () => {},
+        () => getCommandQuery.refetch()
+      );
+    }
+  }, [deleteCommandMutation.data]);
+
   function createCommand() {
-    if (cmdName.length === 0) {
-      toast.error("meeting name is empty.");
+    const { name, commands } = inpData;
+    if (isEmpty(name) || isEmpty(commands)) {
+      toast.error("some fields are empty.");
       return;
     }
-    createMeetingMutation.mutate({ name: cmdName });
+    createCommandMutation.mutate({ name, command: commands });
   }
 
   function deleteCommand(id: string) {
     setLoadingStack((prev) => [...prev, { id }]);
-    deleteMeetingMutation.mutate({ id });
+    deleteCommandMutation.mutate({ id });
   }
 
   return (
@@ -94,30 +129,95 @@ export default function Commands() {
             <br />
             <button
               className="w-auto px-4 py-2 rounded-md bg-blue-300 text-white-100 pp-SB text-[14px]"
-              // onClick={() => setIsModalOpen(!isModalOpen)}
+              onClick={() => setIsModalOpen(!isModalOpen)}
             >
               Create New Command
             </button>
           </div>
           <div className="w-full h-auto py-5 px-3 flex flex-wrap items-start justify-start gap-5">
-            {allCmds.length > 0
-              ? allCmds.map((d, i) => (
-                  <CommandLists
-                    name={d.name}
-                    slug={d.slug}
-                    id={d.id}
-                    key={d.id}
-                    deleteCommand={deleteCommand}
-                    loadingStack={loadingStack}
-                  />
-                ))
-              : null}
+            {getCommandQuery.isLoading ? (
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <Spinner color="#3F7EEE" />
+              </div>
+            ) : allCmds.length > 0 ? (
+              allCmds.map((d, i) => (
+                <CommandLists
+                  name={d.name}
+                  slug={d.slug}
+                  id={d._id}
+                  key={d._id}
+                  deleteCommand={deleteCommand}
+                  loadingStack={loadingStack}
+                />
+              ))
+            ) : null}
+
+            {allCmds.length === 0 && (
+              <div className="w-full flex items-center justify-center">
+                <p className="text-white-300 pp-RG">No Commands available.</p>
+              </div>
+            )}
           </div>
         </div>
       )}
+      <Modal isBlurBg isOpen={isModalOpen} showCloseIcon onClose={toggleModal}>
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
+            <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
+              <p className="text-white-100 text-[18px] pp-SB">
+                Create New Command
+              </p>
+            </div>
+            <br />
+            <div className="w-full px-3 flex flex-col items-start justify-start mb-3">
+              <input
+                type="text"
+                className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 rounded-md"
+                placeholder="Command Name"
+                maxLength={30}
+                onChange={(e) =>
+                  setInpData((prev) => ({ ...prev, ["name"]: e.target.value }))
+                }
+                defaultValue={inpData.name}
+              />
+              <br />
+              <textarea
+                className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 rounded-md"
+                placeholder={`commands separated by comma eg "mkdir test, cd test, code ." `}
+                maxLength={30}
+                rows={3}
+                cols={10}
+                onChange={(e) =>
+                  setInpData((prev) => ({
+                    ...prev,
+                    ["commands"]: e.target.value,
+                  }))
+                }
+                defaultValue={inpData.commands}
+              />
+              <br />
+              <button
+                className="w-full mt-3 px-4 py-2 rounded-md bg-blue-300 text-white-100 pp-SB text-[14px]"
+                disabled={createCommandMutation.isLoading}
+                onClick={createCommand}
+              >
+                {createCommandMutation.isLoading ? (
+                  <div className="w-full flex items-center justify-center gap-4">
+                    <Spinner color="#fff" /> Creating
+                  </div>
+                ) : (
+                  "Create Command"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </MainDashboardLayout>
   );
 }
+
+export default withAuth(Commands);
 
 interface CommandListProps {
   name: string;
@@ -125,39 +225,42 @@ interface CommandListProps {
   id: string;
   deleteCommand: (id: string) => void;
   loadingStack: { id: string }[];
+  key: any;
 }
 
 function CommandLists({
   name,
   slug,
   id,
+  key,
   deleteCommand,
   loadingStack,
 }: CommandListProps) {
   const copyToken = () => {
     const { location } = window;
-    const url = `${location.origin}/meet/${slug}`;
+    const url = `qwik run ${name}`;
     copyToClipboard(url);
-    toast.success("Url copied.");
+    toast.success("command copied.");
   };
 
-  const currentStack = loadingStack.filter((d) => d.id === id) ?? null;
+  const mainStack = loadingStack.filter((d) => d.id === id);
+  const currentStack = mainStack.length === 0 ? null : mainStack;
 
   return (
-    <div
+    <button
       data-id={id}
-      key={id}
+      key={key}
       className={`w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100`}
     >
       <div className="w-[50px] h-[50px] flex items-center justify-center p-4 rounded-lg border-solid border-[.5px] border-white-600 ">
-        <span className="text-2xl">📽</span>
+        <span className="text-2xl">📦</span>
       </div>
       <div className="w-full flex flex-col items-start justify-start ml-2 gap-2">
         <p className="text-white-100 pp-SB text-[14px]">
           {name ?? "Meeting Name"}
         </p>
         <div className="w-full flex flex-wrap items-start justify-start gap-2">
-          <span className="text-white-400 text-[12px] pp-RG">{slug}</span>
+          <span className="text-white-300 font-mono pp-SB text-[10px] pp-RG"></span>
         </div>
       </div>
       <button
@@ -176,7 +279,7 @@ function CommandLists({
           <AiFillDelete />
         )}
       </button>
-    </div>
+    </button>
   );
 }
 

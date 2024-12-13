@@ -7,14 +7,14 @@ import { useQuery } from "react-query";
 import { getUserInfo } from "../../http";
 import { HandleUserResponse } from "../../util/response";
 import isAuthenticated from "../../util/isAuthenticated";
+import withAuth from "../../util/withAuth";
 
-export default function Dashboard({ isAuthorized }) {
+function Dashboard({ isAuthorized }) {
   const isReady = useIsReady();
   const router = useRouter();
   const userInfoQuery = useQuery({
     queryFn: async () => await getUserInfo(),
     queryKey: ["getUserInfo"],
-    enabled: isAuthorized,
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Dashboard({ isAuthorized }) {
         (data) => {}
       );
     }
-  }, [userInfoQuery.data]);
+  }, [userInfoQuery.data, userInfoQuery]);
 
   return (
     <MainDashboardLayout activeTab="dashboard">
@@ -52,3 +52,5 @@ export default function Dashboard({ isAuthorized }) {
     </MainDashboardLayout>
   );
 }
+
+export default withAuth(Dashboard);
