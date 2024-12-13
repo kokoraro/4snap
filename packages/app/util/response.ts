@@ -26,7 +26,7 @@ const checkServerError = (
   if (response?.code === "--auth/account-notfound") {
     toast.error("Something Went Wrong" + ".." + "Try again later.");
     resetState();
-    location.href = "/auth/login";
+    location.href = "/auth";
     localStorage.removeItem("authToken");
   }
 };
@@ -72,13 +72,36 @@ export function HandleCommandResponse(
   returnData: (data) => any,
   successfull?: () => void | any
 ) {
-  if (response?.code === "--allCommands/success") {
+  if (
+    [
+      "--createInAppCommand/invalid-fields",
+      "--createInAppCommand/name-exists",
+      "--deleteCommand/name-exists",
+      "--deleteCommand/invalid-fields",
+    ].includes(response?.code)
+  ) {
+    resetState();
+    toast.error(response?.message);
+    return;
+  }
+
+  if (
+    ["--allCommands/success", "--deleteCommand/success"].includes(
+      response?.code
+    )
+  ) {
     resetState();
     successfull && successfull();
     returnData(response?.data);
     return;
   }
 
+  if (response?.code === "--createInAppCommand/success") {
+    toast.success(response?.message);
+    resetState();
+    successfull && successfull();
+    return;
+  }
   // api server error
   checkServerError(response, resetState);
   checkInvalidToken(response, resetState);
