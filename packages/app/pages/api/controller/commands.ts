@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import BaseController from "./base";
-import { isEmpty } from "../../../util";
+import { isEmpty, isValidCliCommand } from "../../../util";
 import { CommandsModel, SettingsModel, UserModel } from "../model";
 import {
   CreateCliAndInAppCmdSchema,
@@ -51,7 +51,12 @@ export default class CommandController extends BaseController {
             .replace(/\s/g, "-")
         : cliName.join("");
     console.log({ formattedName });
-    const cmds = payload["command"];
+
+    const cmds = payload["command"]
+      .trim()
+      .split(", ")
+      .filter((n) => (/\s/g.test(n) ? n.replace(/\s/g, "-") : n))
+      .join(",");
     const isPublic = payload["public"] ?? true;
 
     const nameExists = await CommandsModel.findOne({ name: formattedName });
@@ -151,6 +156,16 @@ export default class CommandController extends BaseController {
       return;
     }
 
+    if (!isValidCliCommand(payload["command"])) {
+      this.error(
+        res,
+        "--createCliCommand/invalid-fields",
+        `Invalid command`,
+        400
+      );
+      return;
+    }
+
     const cliName = payload["name"].trim().split(" ");
     const formattedName =
       cliName.length > 1
@@ -160,7 +175,11 @@ export default class CommandController extends BaseController {
             .join(" ")
             .replace(/\s/g, "-")
         : cliName.join("");
-    const cmds = payload["command"];
+    const cmds = payload["command"]
+      .trim()
+      .split(", ")
+      .filter((n) => (/\s/g.test(n) ? n.replace(/\s/g, "-") : n))
+      .join(",");
     const isPublic = payload["public"] ?? true;
 
     const nameExists = await CommandsModel.findOne({ name: cliName });
