@@ -5,36 +5,46 @@ import {
   checkInvalidToken,
   checkServerError,
 } from "../helpers/serverResponse.js";
-import logger from "../helpers/logger.js";
+import Conf from "conf";
 
-export async function authCliApp(token: string) {
+const storage = new Conf({ projectName: "qwik" });
+
+export async function authCliApp() {
   intro("qwik");
+  const spinner = await showLoading();
   try {
-    const LOADING = await showLoading();
     const userToken = await text({
-      message: "Qwik Token",
+      message: "Enter your qwik token: ",
       placeholder: "xxxxxxxxx",
       validate(value) {
         if (value.length === 0) return `Value is required!`;
       },
     });
 
-    LOADING.start("Authenticating..");
+    spinner.start("Authenticating..");
 
     const resp = await authenticate({ token: userToken });
 
     if (["--cliAuth/invalid-token"].includes(resp?.code)) {
-      LOADING.stop(null, resp?.message);
+      spinner.fail(resp?.message);
     }
 
     if (["--cliAuth/success"].includes(resp?.code)) {
-      LOADING.stop(resp?.message, null);
-      console.log(resp.data);
+      spinner.success(resp?.message);
+      storage.set("@authToken", resp?.data?.token);
+      storage.set("@userInfo", {
+        username: resp?.data?.username,
+        email: resp?.data?.email,
+        uId: resp?.data?.userId,
+      });
+      process.exit();
     }
+
+    spinner.stop();
 
     checkServerError(resp);
     checkInvalidToken(resp);
   } catch (e: any) {
-    console.log(`Error authenticating user: ${e.message}`);
+    spinner.fail(`Failed to authenticate, Try again later.`);
   }
 }
