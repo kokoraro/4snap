@@ -5,14 +5,19 @@ async function showLoading() {
         start: (message) => {
             spinner = ora(message + "\n").start();
         },
-        stop: (successMessage, errorMessage) => {
+        stop: () => {
+            spinner.stop();
+        },
+        success: (successMessage) => {
             if (spinner) {
-                if (errorMessage) {
-                    spinner.fail(errorMessage + "\n");
-                }
-                else {
-                    spinner.succeed(successMessage + "\n");
-                }
+                spinner.stop();
+                spinner.succeed(successMessage);
+            }
+        },
+        fail: (errorMessage) => {
+            if (spinner) {
+                spinner.stop();
+                spinner.fail(errorMessage + "\n");
             }
         },
     };
