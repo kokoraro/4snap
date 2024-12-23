@@ -46,7 +46,7 @@ export default class CliAuthController extends BaseController {
     // send success response
     this.success(res, "--cliAuth/success", "Authenticated successfully", 200, {
       email: userInfo.email,
-      username: userInfo?.email,
+      username: userInfo?.username,
       userId: userInfo?.uId,
       token,
     });
