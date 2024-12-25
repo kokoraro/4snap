@@ -5,11 +5,9 @@ import {
   checkInvalidToken,
   checkServerError,
 } from "../helpers/serverResponse.js";
-import Conf from "conf";
+import storage from "../config/index.js";
 
-const storage = new Conf({ projectName: "qwik" });
-
-export async function authCliApp() {
+export default async function authCliApp() {
   intro("qwik");
   const spinner = await showLoading();
   try {
