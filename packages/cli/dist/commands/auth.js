@@ -2,9 +2,8 @@ import { text, intro } from "@clack/prompts";
 import showLoading from "../helpers/loader.js";
 import { authenticate } from "../helpers/http.js";
 import { checkInvalidToken, checkServerError, } from "../helpers/serverResponse.js";
-import Conf from "conf";
-const storage = new Conf({ projectName: "qwik" });
-export async function authCliApp() {
+import storage from "../config/index.js";
+export default async function authCliApp() {
     intro("qwik");
     const spinner = await showLoading();
     try {
