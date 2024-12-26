@@ -1,27 +1,27 @@
-import { isCancel, spinner, text, intro, outro } from "@clack/prompts";
-import showLoading from "../helpers/loader.js";
+import { isCancel, spinner, text, intro, outro, cancel } from "@clack/prompts";
 import { authenticate } from "../helpers/http.js";
-import {
-  checkInvalidToken,
-  checkServerError,
-} from "../helpers/serverResponse.js";
 import storage from "../config/index.js";
 import { sleep } from "../helpers/index.js";
 import logger from "../helpers/logger.js";
 import chalk from "chalk";
 
 export default async function authCliApp() {
-  intro("qwik");
+  intro("4snap");
   // const spinner = await showLoading();
   const s = spinner();
   try {
     const userToken = await text({
-      message: "Enter your qwik token: ",
+      message: "Enter your 4snap token: ",
       placeholder: "xxxxxxxxx",
       validate(value): string | void {
         if (value.length === 0) return `Value is required!`;
       },
     });
+
+    if (isCancel(userToken)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
+    }
 
     // spinner.start("Authenticating..");
     s.start("Authenticating..");

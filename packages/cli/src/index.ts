@@ -1,7 +1,9 @@
+#!/usr/bin/env node
 import { Command } from "commander";
 import {
   authCliApp,
   createCmd,
+  execCmd,
   listCommands,
   whoami,
 } from "./commands/index.js";
@@ -11,7 +13,7 @@ const program = new Command();
 program
   .command("login")
   .alias("l")
-  .description("Authenticate cli with Qwik token.")
+  .description("Authenticate cli with 4snap token.")
   .action(authCliApp);
 
 program
@@ -34,12 +36,12 @@ program
 
 program
   .command("run <command>")
-  .option("-p <user>", "Execute a public list")
+  .option("-p", "Execute a public list")
   .alias("r")
   .description("Execute a command")
   .action(async (command, options) => {
-    const user = options.p ? options.p : false;
-    console.log({ command, user, arg: process.argv });
+    const isPublic = options.p ? options.p : false;
+    await execCmd(isPublic, command);
   });
 
 program.parse();
