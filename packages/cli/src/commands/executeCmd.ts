@@ -4,6 +4,7 @@ import chalk from "chalk";
 import { sleep } from "../helpers/index.js";
 import shell from "shelljs";
 import { directoryExists } from "../helpers/fileManager.js";
+import { getCmdByName } from "../helpers/http.js";
 
 export default async function executeCmd(
   isPublic: boolean,
@@ -67,7 +68,54 @@ async function executeLocalCmd(commandName: string) {
 }
 
 async function executePublicCmd(commandName: string) {
-  console.log("PUBLIC COMMAND", commandName);
+  console.log("\n");
+  intro(
+    chalk.bgBlueBright(chalk.whiteBright(`Executing public ${commandName}...`))
+  );
+  const sp = spinner();
+  try {
+    const resp = await getCmdByName(commandName);
+
+    sp.start("Fetching public commands...");
+    await sleep(1);
+
+    if (["--commandByName/notfound"].includes(resp?.code)) {
+      sp.stop(`🚩 ${chalk.redBright(resp?.message)}`);
+    }
+
+    if (["--commandByName/success"].includes(resp?.code)) {
+      //   sp.stop(`✅ ${chalk.greenBright(resp?.message)}`);
+      sp.stop();
+
+      const data = resp?.data;
+
+      const command = data?.command;
+
+      if (command.includes("$")) {
+        await executeDynamicCommand(command, commandName);
+      } else {
+        const sp = spinner();
+        sp.start("Starting execution.. \n");
+
+        if (shell.exec(command.split(",").join(" && ")).code === 0) {
+          sp.stop(
+            chalk.yellowBright(
+              ` ✨ Successfully executed ${chalk.bold(
+                chalk.underline(commandName)
+              )} `
+            )
+          );
+        } else {
+          sp.stop(
+            chalk.redBright(`\n Failed to execute '${commandName}'!. \n`)
+          );
+        }
+      }
+    }
+  } catch (e: any) {
+    sp.stop(`${chalk.redBright("Something went wrong, Try again later.")}`);
+  }
+  outro("Done");
 }
 
 async function executeDynamicCommand(cmd: string, cmdName: string) {
