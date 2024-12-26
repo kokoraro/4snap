@@ -1,4 +1,4 @@
-import { intro } from "@clack/prompts";
+import { intro, outro } from "@clack/prompts";
 import storage from "../config/index.js";
 import Table from "cli-table";
 import chalk from "chalk";
@@ -21,4 +21,5 @@ export default async function whoami() {
   });
 
   console.log(table.toString());
+  outro("Done");
 }
