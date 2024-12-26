@@ -2,7 +2,7 @@
 
 ### Commands
 
-`qwik <command name>`
+`4snap <command name>`
 
 - `list`
 - `auth`

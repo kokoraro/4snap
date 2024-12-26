@@ -1623,7 +1623,7 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-"app@file:/Users/benrobo/Documents/projects/Qwik/packages/app":
+"app@file:/Users/benrobo/Documents/projects/4snap/packages/app":
   version "0.1.0"
   resolved "file:packages/app"
   dependencies:
@@ -2025,7 +2025,7 @@ cli-width@^4.0.0:
   resolved "https://registry.npmjs.org/cli-width/-/cli-width-4.0.0.tgz"
   integrity sha512-ZksGS2xpa/bYkNzN3BAw1wEjsLV/ZKOf/CCrJ/QOBsxx6fOARIkwTutxp1XIOIohi6HKmOFjMoK/XaqDVUpEEw==
 
-"cli@file:/Users/benrobo/Documents/projects/Qwik/packages/cli":
+"cli@file:/Users/benrobo/Documents/projects/4snap/packages/cli":
   version "1.0.0"
   resolved "file:packages/cli"
   dependencies:
