@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "4snap",
   "version": "1.0.0",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -9,6 +9,7 @@
     "build": "tsc",
     "dev": "node ./dist/index.js"
   },
+  "exports": "./dist/index.js",
   "dependencies": {
     "@clack/prompts": "^0.6.3",
     "axios": "^1.4.0",
@@ -30,6 +31,6 @@
     "typescript": "^5.1.3"
   },
   "bin": {
-    "qwik": "./dist/index.js"
+    "4snap": "./dist/index.js"
   }
 }
