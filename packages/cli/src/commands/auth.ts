@@ -18,7 +18,7 @@ export default async function authCliApp() {
     const userToken = await text({
       message: "Enter your qwik token: ",
       placeholder: "xxxxxxxxx",
-      validate(value) {
+      validate(value): string | void {
         if (value.length === 0) return `Value is required!`;
       },
     });

@@ -14,7 +14,7 @@ export default async function createCommand() {
     const cmdName = await text({
       message: "Command name: ",
       placeholder: "create-project",
-      validate(value) {
+      validate(value): string | void {
         if (value.length === 0) return `Value is required!`;
       },
     });
@@ -33,7 +33,7 @@ export default async function createCommand() {
     const commandList = await text({
       message: "Command lists separted by comma (,): ",
       placeholder: "mkdir name, cd name, code . ",
-      validate(value) {
+      validate(value): string | void {
         if (value.length === 0) return `Value is required!`;
       },
     });
