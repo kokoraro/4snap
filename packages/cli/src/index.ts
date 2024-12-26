@@ -33,13 +33,13 @@ program
   .action(listCommands);
 
 program
-  .command("run")
+  .command("run <command>")
+  .option("-p <user>", "Execute a public list")
+  .alias("r")
   .description("Execute a command")
-  .option("-p", "Run command publicly")
-  .argument("<commandName>", "command name to run")
-  .action((cmdName, options) => {
-    // const isPublic = options.pub ? true : undefined;
-    console.log({ cmdName, hey: program.opts(), arg: process.argv });
+  .action(async (command, options) => {
+    const user = options.p ? options.p : false;
+    console.log({ command, user, arg: process.argv });
   });
 
 program.parse();
