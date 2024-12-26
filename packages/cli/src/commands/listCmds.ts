@@ -17,13 +17,13 @@ export default async function listCommands() {
       chalk.cyanBright("Public"),
     ],
   });
-  const savedCmd = (storage.get("@qwik_commands") as SavedCommad[]) ?? [];
+  const savedCmd = (storage.get("@4snap_cmd") as SavedCommad[]) ?? [];
 
   savedCmd.forEach((c, i) => {
     const comb = [
       i,
       c.name,
-      chalk.bold(chalk.italic(` qwik run ${c.name} `)),
+      chalk.bold(chalk.italic(` 4snap run ${c.name} `)),
       c.public ? "🟢" : "🔴",
     ];
     table.push(comb);
