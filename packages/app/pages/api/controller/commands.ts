@@ -145,6 +145,44 @@ export default class CommandController extends BaseController {
     );
   }
 
+  async getCliCommandByName(req: NextApiRequest, res: NextApiResponse) {
+    const payload = req.query;
+    const cmdName = payload["cmdName"] ?? "";
+
+    if (typeof cmdName === "undefined" || cmdName.length === 0) {
+      this.error(
+        res,
+        "--commandByName/notfound",
+        `Command name not found`,
+        400
+      );
+      return;
+    }
+
+    const filteredCmdByName = await CommandsModel.findOne({
+      name: cmdName,
+      public: true,
+    });
+
+    if (filteredCmdByName === null) {
+      this.error(
+        res,
+        "--commandByName/notfound",
+        `Command name not found`,
+        400
+      );
+      return;
+    }
+
+    this.success(
+      res,
+      "--commandByName/success",
+      `Command fetched`,
+      200,
+      filteredCmdByName
+    );
+  }
+
   async createCliCmd(req: NextApiRequest, res: NextApiResponse) {
     const userInfo = req["user"];
     const payload = req.body;
