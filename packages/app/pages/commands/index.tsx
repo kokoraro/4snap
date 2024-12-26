@@ -255,7 +255,7 @@ function CommandLists({
 }: CommandListProps) {
   const copyToken = () => {
     const { location } = window;
-    const url = `qwik run ${name}`;
+    const url = `4snap run ${name}`;
     copyToClipboard(url);
     toast.success("command copied.");
   };
