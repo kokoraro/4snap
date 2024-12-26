@@ -15,4 +15,10 @@ program
   .description("Check user information.")
   .action(whoami);
 
+program
+  .command("create")
+  .alias("c")
+  .description("create list of commands.")
+  .action(whoami);
+
 program.parse();
