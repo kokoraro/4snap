@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { authCliApp, whoami } from "./commands/index.js";
+import { authCliApp, createCmd, whoami } from "./commands/index.js";
 const program = new Command();
 program
     .command("login")
@@ -15,5 +15,5 @@ program
     .command("create")
     .alias("c")
     .description("create list of commands.")
-    .action(whoami);
+    .action(createCmd);
 program.parse();
