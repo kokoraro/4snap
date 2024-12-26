@@ -1,4 +1,12 @@
-import { intro, outro, text, select, spinner } from "@clack/prompts";
+import {
+  intro,
+  outro,
+  text,
+  select,
+  spinner,
+  isCancel,
+  cancel,
+} from "@clack/prompts";
 import storage from "../config/index.js";
 import Table from "cli-table";
 import chalk from "chalk";
@@ -7,7 +15,7 @@ import { sleep } from "../helpers/index.js";
 import { createCmds } from "../helpers/http.js";
 
 export default async function createCommand() {
-  intro(chalk.bgBlueBright(chalk.whiteBright(" qwik commands ")));
+  intro(chalk.bgBlueBright(chalk.whiteBright(" 4snap commands ")));
   const s = spinner();
   try {
     // command name
@@ -19,6 +27,11 @@ export default async function createCommand() {
       },
     });
 
+    if (isCancel(cmdName)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
+    }
+
     // public / private
     const isPublic = await select({
       message: "Available to public?.",
@@ -29,6 +42,11 @@ export default async function createCommand() {
       initialValue: "public",
     });
 
+    if (isCancel(isPublic)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
+    }
+
     // list of commands
     const commandList = await text({
       message: "Command lists separted by comma (,): ",
@@ -37,6 +55,11 @@ export default async function createCommand() {
         if (value.length === 0) return `Value is required!`;
       },
     });
+
+    if (isCancel(commandList)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
+    }
 
     // @ts-ignore
     const cliName = slugify(cmdName, { lower: true, trim: true });
@@ -67,14 +90,15 @@ export default async function createCommand() {
     if (["--createCliCommand/success"].includes(resp?.code)) {
       s.stop(`✅ ${chalk.greenBright(resp?.message)}`);
       const data = resp?.data;
-      const prevCmds = (storage.get("@qwik_commands") as string[]) ?? [];
+      const prevCmds = (storage.get("@4snap_cmd") as object[]) ?? [];
       const comb = [...prevCmds, data];
-      storage.set("@qwik_commands", comb);
+      storage.set("@4snap_cmd", comb);
 
       //   print message
       console.log("\t ");
       console.log(
-        "\t" + chalk.bgBlueBright(chalk.whiteBright(` qwik run ${data?.name} `))
+        "\t" +
+          chalk.bgBlueBright(chalk.whiteBright(` 4snap run ${data?.name} `))
       );
     }
   } catch (e: any) {
