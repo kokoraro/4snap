@@ -90,7 +90,7 @@ export function isCliUserLoggedIn(handler: NextApiHandler) {
         return res.status(401).json({
           errorStatus: true,
           code: "--auth/authorization-token-notfound",
-          message: `Authorization header expected a token but got none.`,
+          message: `Auth token is missing. please login and try again.`,
         });
       }
 

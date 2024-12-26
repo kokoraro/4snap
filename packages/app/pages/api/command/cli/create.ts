@@ -1,6 +1,6 @@
 import { CatchErrors } from "../../middlewares/error";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isLoggedIn } from "../../middlewares/auth";
+import { isCliUserLoggedIn } from "../../middlewares/auth";
 import dbConnect from "../../config/mongodb";
 import CommandController from "../../controller/commands";
 
@@ -13,4 +13,4 @@ const createCliCmd = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default isLoggedIn(CatchErrors(createCliCmd));
+export default isCliUserLoggedIn(CatchErrors(createCliCmd));

@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { authCliApp, createCmd, whoami } from "./commands/index.js";
+import { authCliApp, createCmd, listCommands, whoami, } from "./commands/index.js";
 const program = new Command();
 program
     .command("login")
@@ -16,4 +16,17 @@ program
     .alias("c")
     .description("create list of commands.")
     .action(createCmd);
+program
+    .command("list")
+    .alias("li")
+    .description("list available saved command.")
+    .action(listCommands);
+program
+    .command("run")
+    .description("Execute a command")
+    .option("-p", "Run command publicly")
+    .argument("<commandName>", "command name to run")
+    .action((cmdName, options) => {
+    console.log({ cmdName, hey: program.opts(), arg: process.argv });
+});
 program.parse();
