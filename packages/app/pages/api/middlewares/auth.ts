@@ -43,7 +43,7 @@ export function isLoggedIn(handler: NextApiHandler) {
       await handler(req, res);
     } catch (e: any) {
       console.log(e);
-      console.error(`invalid qwik token: ${e?.message}`);
+      console.error(`invalid 4snap token: ${e?.message}`);
       return res.status(401).json({
         errorStatus: true,
         code: "--auth/invalid-token",
@@ -84,7 +84,7 @@ export function isCliUserLoggedIn(handler: NextApiHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     await dbConnect();
     try {
-      const token = req.headers["x-qwik-token"];
+      const token = req.headers["x-4snap-token"];
 
       if (!token || typeof token === "undefined") {
         return res.status(401).json({
@@ -95,9 +95,9 @@ export function isCliUserLoggedIn(handler: NextApiHandler) {
       }
 
       //   check if user exists
-      const qwikTokenExists = await SettingsModel.findOne({ token });
+      const snapTokenExists = await SettingsModel.findOne({ token });
 
-      if (qwikTokenExists === null) {
+      if (snapTokenExists === null) {
         res.status(404).json({
           errorStatus: true,
           code: "--auth/invalid-token",
@@ -106,13 +106,13 @@ export function isCliUserLoggedIn(handler: NextApiHandler) {
         return;
       }
 
-      const uId = qwikTokenExists.userId;
+      const uId = snapTokenExists.userId;
       const account = await UserModel.findOne({ uId });
 
       req["user"] = account;
       await handler(req, res);
     } catch (e: any) {
-      console.error(`invalid qwik token: ${e?.message}`);
+      console.error(`invalid 4snap token: ${e?.message}`);
       return res.status(401).json({
         errorStatus: true,
         code: "--auth/invalid-token",

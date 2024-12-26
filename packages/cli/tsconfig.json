@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules"],
-  // "include": ["src", "lib"],
+  "include": ["src", "lib"],
   "compilerOptions": {
     /* LANGUAGE COMPILATION OPTIONS */
     "target": "ES2020",
@@ -45,6 +45,9 @@
     "skipLibCheck": true,
     "useDefineForClassFields": true,
     "baseUrl": "./src",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "*": ["./src/*"]
+    }
   }
 }
