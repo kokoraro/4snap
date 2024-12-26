@@ -1,9 +1,6 @@
 import { CatchErrors } from "../../middlewares/error";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  isQwikUserLoggedIn,
-  passageAuthMiddleware,
-} from "../../middlewares/auth";
+import { isCliUserLoggedIn } from "../../middlewares/auth";
 import dbConnect from "../../config/mongodb";
 import CommandController from "../../controller/commands";
 
@@ -16,4 +13,4 @@ const getCliCmd = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default isQwikUserLoggedIn(CatchErrors(getCliCmd));
+export default isCliUserLoggedIn(CatchErrors(getCliCmd));
