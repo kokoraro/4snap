@@ -25,20 +25,30 @@ export default class UserController extends BaseController {
   async create(req: NextApiRequest, res: NextApiResponse) {
     const userId = req["userId"];
     const payload = req.body;
-    console.log(payload);
+
     if (isEmpty(payload) || Object.entries(payload).length === 0) {
       this.error(res, "--create/invalid-field", "User email not found", 404);
       return;
     }
 
     const email = payload["email"];
+    const username = payload["username"];
+    const fullname = payload["fullname"];
 
     if (isEmpty(email)) {
-      this.error(res, "--create/invalid-field", "User email not found", 404);
+      this.error(res, "--create/invalid-field", "email can't be empty", 404);
+      return;
+    }
+    if (isEmpty(username)) {
+      this.error(res, "--create/invalid-field", "username can't be empty", 404);
+      return;
+    }
+    if (isEmpty(fullname)) {
+      this.error(res, "--create/invalid-field", "fullname can't be empty", 404);
       return;
     }
 
-    const emailExists = await UserModel.find({ email });
+    const emailExists = await UserModel.find({ email, username });
 
     if (emailExists.length > 0) {
       this.error(
@@ -51,12 +61,13 @@ export default class UserController extends BaseController {
     }
 
     // create user account
-    const username = email.split("@")[0];
     const collection = {
       uId: userId,
       email,
+      fullname,
       username,
     };
+
     await UserModel.create(collection);
 
     // create a default token for cli authentication.
@@ -67,7 +78,7 @@ export default class UserController extends BaseController {
     });
 
     // send success response
-    this.success(res, "--create/success", "user created successfully", 200, {
+    this.success(res, "--create/success", "account created successfully", 200, {
       ...collection,
       token: tokenGenerated,
     });
