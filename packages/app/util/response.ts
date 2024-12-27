@@ -56,8 +56,24 @@ export function HandleUserResponse(
   if (response?.code === "--getUserInfo/success") {
     resetState();
     successfull && successfull();
-    localStorage.setItem("@userInfo", JSON.stringify(response?.data));
+    returnData(response?.data);
     return;
+  }
+
+  if (
+    ["--create/user-exists", "--create/invalid-field", ,].includes(
+      response?.code
+    )
+  ) {
+    resetState();
+    toast.error(response?.message);
+    return;
+  }
+
+  if (response?.code === "--create/success") {
+    resetState();
+    toast.success(response?.message);
+    successfull();
   }
 
   // api server error
