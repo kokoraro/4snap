@@ -2,15 +2,18 @@ import { randomUUID } from "crypto";
 import $http from "./axios";
 import { genRandNum } from "../util";
 
-export async function getUser() {
-  const req = await $http.get("/");
-  const data = req.data;
-  return data;
-}
+export const createInAppUser = async (data: any) => {
+  try {
+    const res = await $http.post(`/user/create`, data);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
 
 export const getUserInfo = async () => {
   try {
-    const res = await $http.get(`/user/getInfo`);
+    const res = await $http.get(`/user/getInfo?t=${genRandNum()}`);
     return res?.data ?? (res as any)?.response?.data;
   } catch (e: any) {
     return e.response.data ?? { message: e.message };
