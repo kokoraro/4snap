@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import $http from "./axios.js";
 
 export const authenticate = async (data: any) => {
@@ -21,6 +22,17 @@ export const createCmds = async (data: any) => {
 export const getAllCmds = async (data: any) => {
   try {
     const res = await $http.get(`/command/cli/get`, data);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
+
+export const getCmdByName = async (cmdName: any) => {
+  try {
+    const res = await $http.get(
+      `/command/cli/${cmdName}?t=${randomBytes(10).toString("hex")}`
+    );
     return res?.data ?? (res as any)?.response?.data;
   } catch (e: any) {
     return e.response.data ?? { message: e.message };
