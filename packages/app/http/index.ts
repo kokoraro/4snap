@@ -20,6 +20,24 @@ export const getUserInfo = async () => {
   }
 };
 
+export const getAuthToken = async () => {
+  try {
+    const res = await $http.get(`/user/getToken?t=${genRandNum()}`);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
+
+export const rotateAuthToken = async () => {
+  try {
+    const res = await $http.get(`/user/rotateToken?t=${genRandNum()}`);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
+
 // Commands
 
 // invoked only from the web app.
