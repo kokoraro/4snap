@@ -19,9 +19,11 @@ export const createCmds = async (data: any) => {
   }
 };
 
-export const getAllCmds = async (data: any) => {
+export const getAllCmds = async () => {
   try {
-    const res = await $http.get(`/command/cli/get`, data);
+    const res = await $http.get(
+      `/command/cli/get?t=${randomBytes(10).toString("hex")}`
+    );
     return res?.data ?? (res as any)?.response?.data;
   } catch (e: any) {
     return e.response.data ?? { message: e.message };
