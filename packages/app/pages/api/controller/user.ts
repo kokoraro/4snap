@@ -96,4 +96,33 @@ export default class UserController extends BaseController {
       userInfo
     );
   }
+
+  async getAuthToken(req: NextApiRequest, res: NextApiResponse) {
+    const userId = req["userId"];
+    const details = await SettingsModel.findOne({ userId });
+
+    this.success(
+      res,
+      "--getAuthToken/success",
+      "user info fetched.",
+      200,
+      details.token
+    );
+  }
+
+  async rotateAuthToken(req: NextApiRequest, res: NextApiResponse) {
+    const userId = req["userId"];
+    const tokenGenerated = this.generateToken(20);
+
+    // update token in settings
+    await SettingsModel.findOneAndUpdate({ userId }, { token: tokenGenerated });
+
+    this.success(
+      res,
+      "--rotateAuthToken/success",
+      "user info fetched.",
+      200,
+      tokenGenerated
+    );
+  }
 }
