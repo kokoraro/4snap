@@ -73,7 +73,17 @@ export function HandleUserResponse(
   if (response?.code === "--create/success") {
     resetState();
     toast.success(response?.message);
-    successfull();
+    successfull && successfull();
+  }
+
+  if (response?.code === "--getAuthToken/success") {
+    resetState();
+    returnData(response?.data);
+  }
+
+  if (response?.code === "--rotateAuthToken/success") {
+    resetState();
+    returnData(response?.data);
   }
 
   // api server error
