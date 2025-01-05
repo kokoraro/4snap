@@ -15,7 +15,8 @@ import { sleep } from "../helpers/index.js";
 import { createCmds } from "../helpers/http.js";
 
 export default async function createCommand() {
-  intro(chalk.bgBlueBright(chalk.whiteBright(" 4snap commands ")));
+  console.log("\n");
+  intro(chalk.bgBlueBright(chalk.whiteBright("4snap commands ")));
   const s = spinner();
   try {
     // command name
