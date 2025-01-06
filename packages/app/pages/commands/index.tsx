@@ -238,7 +238,6 @@ export default withAuth(Commands);
 
 interface CommandListProps {
   name: string;
-  slug: string;
   id: string;
   deleteCommand: (id: string) => void;
   loadingStack: { id: string }[];
@@ -247,7 +246,6 @@ interface CommandListProps {
 
 function CommandLists({
   name,
-  slug,
   id,
   key,
   deleteCommand,
@@ -276,8 +274,8 @@ function CommandLists({
         <p className="text-white-100 pp-SB text-[14px]">
           {name ?? "Meeting Name"}
         </p>
-        <div className="w-full flex flex-wrap items-start justify-start gap-2">
-          <span className="text-white-300 font-mono pp-SB text-[10px] pp-RG"></span>
+        <div className="w-full mr-3 flex flex-wrap items-start justify-start gap-2">
+          <span className="text-white-300 font-mono text-[10px]">{`4snap run ${name}`}</span>
         </div>
       </div>
       <button
