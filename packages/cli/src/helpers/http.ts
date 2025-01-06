@@ -49,3 +49,15 @@ export const deleteCmd = async (data: any) => {
     return e.response.data ?? { message: e.message };
   }
 };
+
+export const shareCliCmd = async (data: {
+  username: string;
+  cmdName: string;
+}) => {
+  try {
+    const res = await $http.post(`/command/cli/shareCmd`, data);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
