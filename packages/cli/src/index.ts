@@ -5,6 +5,7 @@ import {
   createCmd,
   execCmd,
   listCommands,
+  syncCmd,
   whoami,
 } from "./commands/index.js";
 
@@ -33,6 +34,12 @@ program
   .alias("li")
   .description("list available saved command.")
   .action(listCommands);
+
+program
+  .command("sync")
+  .alias("sy")
+  .description("Synchronize all local command..")
+  .action(syncCmd);
 
 program
   .command("run <command>")
