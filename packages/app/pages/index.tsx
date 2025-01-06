@@ -6,18 +6,18 @@ import { AiFillPlusCircle, AiOutlineCloudSync } from "react-icons/ai";
 import { useState } from "react";
 import { BsViewList } from "react-icons/bs";
 import { IoShareOutline } from "react-icons/io5";
+import { MdDirectionsRun } from "react-icons/md";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("create");
 
-  const defaultStyle =
-    "hover:bg-gradient-to-b hover:from-white-600 hover:to-dark-300 border-solid border-[.5px] border-transparent hover:border-white-600";
+  const defaultStyle = `hover:bg-gradient-to-b hover:from-white-600 hover:to-dark-300 border-solid border-[.5px] hover:border-white-600`;
 
   const renderActiveStyle = (name: string) => {
     if (name === activeTab) {
-      return "bg-gradient-to-b from-white-600 to-dark-300 border-solid border-[1px] border-white-600 ";
+      return "bg-gradient-to-b from-white-600 to-dark-300 border-solid border-[.5px] border-white-600 opacity-[1] ";
     }
-    return "";
+    return "opacity-[.7] border-transparent";
   };
 
   const toggleTab = (name: string) => setActiveTab(name);
@@ -28,8 +28,20 @@ export default function Home() {
       list: "View a list of available commands.",
       sync: "Synchronize command list from cloud.",
       share: "Share commands with others.",
+      exec: "Execute available command either public or private.",
     };
     return msg[activeTab];
+  };
+
+  const renderTabImage = () => {
+    const img = {
+      create: "/screenshots/create.png",
+      share: "/screenshots/share.png",
+      exec: "/screenshots/exec.png",
+      list: "/screenshots/list.png",
+      sync: "/screenshots/sync.png",
+    };
+    return img[activeTab];
   };
 
   return (
@@ -73,9 +85,9 @@ export default function Home() {
         </div>
       </div>
       {/* header */}
-      <div className="w-full h-full max-h-[300px] z-[10] py-4 mt-7">
-        <div className="w-full max-w-[70%] mx-auto text-center flex flex-col items-center justify-center">
-          <p className="text-white-100 text-center pp-EB text-5xl z-[10]">
+      <div className="w-full h-auto min-h-[300px] z-[10] py-4 mt-7">
+        <div className="w-full px-5 md:px-5 md:max-w-[70%] mx-auto text-center flex flex-col items-center justify-center">
+          <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
             Discover, Share, & Execute Commands Anytime Anywhere
           </p>
           <br />
@@ -99,7 +111,7 @@ export default function Home() {
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "create"
-            )} hover:scale-[1] transition-all opacity-[.7] hover:opacity-[1] `}
+            )} hover:scale-[1] transition-all hover:opacity-[1] `}
             onClick={() => toggleTab("create")}
           >
             <AiFillPlusCircle size={25} className="text-white-200" />
@@ -108,7 +120,7 @@ export default function Home() {
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "list"
-            )} hover:scale-[1] transition-all opacity-[.7] hover:opacity-[1] `}
+            )} hover:scale-[1] transition-all hover:opacity-[1] `}
             onClick={() => toggleTab("list")}
           >
             <BsViewList size={25} className="text-white-200" />
@@ -117,7 +129,7 @@ export default function Home() {
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "sync"
-            )} hover:scale-[1] transition-all opacity-[.7] hover:opacity-[1] `}
+            )} hover:scale-[1] transition-all hover:opacity-[1] `}
             onClick={() => toggleTab("sync")}
           >
             <AiOutlineCloudSync size={25} className="text-white-200" />
@@ -126,14 +138,40 @@ export default function Home() {
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "share"
-            )} hover:scale-[1] transition-all opacity-[.7] hover:opacity-[1] `}
+            )} hover:scale-[1] transition-all hover:opacity-[1] `}
             onClick={() => toggleTab("share")}
           >
             <IoShareOutline size={25} className="text-white-200" />
             <span className="text-white-300 pp-SB text-[12px] ">Share</span>
           </button>
+          <button
+            className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
+              "exec"
+            )} hover:scale-[1] transition-all hover:opacity-[1] `}
+            onClick={() => toggleTab("exec")}
+          >
+            <MdDirectionsRun size={25} className="text-white-200" />
+            <span className="text-white-300 pp-SB text-[12px] ">Execute</span>
+          </button>
         </div>
+        <div className="w-full md:w-[400px] px-5 mt-8 flex flex-col items-center justify-center">
+          {/* <div
+            className="w-full max-w-[450px] h-[300px] bg-dark-300 z-[10] rounded-md"
+            style={{
+              backgroundImage: `url("${renderTabImage()}")`,
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+          ></div> */}
+          <ImageTag
+            src={renderTabImage()}
+            className="w-full rounded-md shadow-2xl "
+          />
+        </div>
+        <br />
       </div>
+      {/* Documentation */}
     </div>
   );
 }
