@@ -5,15 +5,19 @@ import { CommandsModel, SettingsModel, UserModel } from "../model";
 import {
   CreateCliAndInAppCmdSchema,
   DeleteCliAndInAppCmdSchema,
+  ShareCommandSchema,
 } from "../helper/validator";
 
 export default class CommandController extends BaseController {
   private createCliAndInAppCmd;
   private deleteCliAndInAppCmd;
+  private shareCliCmdSchema;
+
   constructor() {
     super();
     this.createCliAndInAppCmd = CreateCliAndInAppCmdSchema;
     this.deleteCliAndInAppCmd = DeleteCliAndInAppCmdSchema;
+    this.shareCliCmdSchema = ShareCommandSchema;
   }
 
   // web only
@@ -287,6 +291,81 @@ export default class CommandController extends BaseController {
       res,
       "--deleteCommand/success",
       `${cmdExists.name} command deleted.`,
+      200
+    );
+  }
+
+  async shareCliCmd(req: NextApiRequest, res: NextApiResponse) {
+    const user = req["user"];
+    const payload = req.body;
+    const { error, value } = this.shareCliCmdSchema.validate(payload);
+
+    if (typeof error !== "undefined") {
+      const msg = error.message;
+      this.error(res, "--shareCliCmd/invalid-fields", msg, 400);
+      return;
+    }
+
+    const username = payload["username"];
+    const cmdName = payload["cmdName"];
+
+    const receiver = await UserModel.findOne({ username });
+
+    if (receiver === null) {
+      this.error(
+        res,
+        "--shareCliCmd/user-notfound",
+        `Receiver was not found`,
+        404
+      );
+      return;
+    }
+
+    const cmdExistsBySender = await CommandsModel.findOne({
+      name: cmdName,
+      userId: user["uId"],
+    });
+    const cmdExistsByReceiver = await CommandsModel.findOne({
+      name: cmdName,
+      userId: receiver["uId"],
+    });
+
+    if (cmdExistsBySender === null) {
+      this.error(
+        res,
+        "--shareCliCmd/command-notfound",
+        `Command name '${cmdName}' doesn't exist`,
+        404
+      );
+      return;
+    }
+
+    if (cmdExistsByReceiver !== null) {
+      this.error(
+        res,
+        "--shareCliCmd/command-found",
+        `Receipient already has this command`,
+        400
+      );
+      return;
+    }
+
+    // add command list to receipient directory
+    await CommandsModel.create({
+      name: cmdExistsBySender?.name,
+      command: cmdExistsBySender?.command,
+      public: cmdExistsBySender?.public,
+      userId: receiver.uId,
+    });
+
+    const receipientInfo = await UserModel.findOne({
+      uId: receiver.uId,
+    });
+
+    this.success(
+      res,
+      "--shareCliCmd/success",
+      `Command shared successfully to ${receipientInfo?.username} `,
       200
     );
   }
