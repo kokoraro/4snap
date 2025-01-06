@@ -2,14 +2,38 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import ImageTag from "../components/Image";
-import { AiFillPlusCircle, AiOutlineCloudSync } from "react-icons/ai";
-import { useState } from "react";
+import {
+  AiFillPlusCircle,
+  AiOutlineCloudSync,
+  AiOutlineDownload,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { BsViewList } from "react-icons/bs";
 import { IoShareOutline } from "react-icons/io5";
 import { MdDirectionsRun } from "react-icons/md";
+import Link from "next/link";
+import { BiCopy, BiSolidLockOpen } from "react-icons/bi";
+import { useQuery } from "react-query";
+import { retrieveAllCommands } from "../http";
+import { HandleCommandResponse } from "../util/response";
+import { Spinner } from "../components/Loader";
+
+interface AllCmds {
+  _id: string;
+  userId: string;
+  name: string;
+  command: string;
+  public: boolean;
+}
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("create");
+  const [allCmds, setAllCmds] = useState<AllCmds[]>([]);
+  const allCmdQuery = useQuery({
+    queryFn: async () => await retrieveAllCommands(),
+    queryKey: ["retrieveAllCommands"],
+  });
 
   const defaultStyle = `hover:bg-gradient-to-b hover:from-white-600 hover:to-dark-300 border-solid border-[.5px] hover:border-white-600`;
 
@@ -43,6 +67,21 @@ export default function Home() {
     };
     return img[activeTab];
   };
+
+  useEffect(() => {
+    if (typeof allCmdQuery.data !== "undefined" || allCmdQuery.error !== null) {
+      const { data } = allCmdQuery;
+      const response = data;
+      HandleCommandResponse(
+        response,
+        () => {},
+        (data) => {
+          setAllCmds(data);
+          console.log(data);
+        }
+      );
+    }
+  }, [allCmdQuery.data]);
 
   return (
     <div className="w-full h-screen overflow-x-hidden scroll-smooth pattern-bg">
@@ -100,7 +139,7 @@ export default function Home() {
         </div>
       </div>
       {/* Content */}
-      <div className="w-full flex flex-col items-center justify-center">
+      <div className="w-full min-h-[750px] flex flex-col items-center justify-center">
         <div className="w-auto max-w-[300px] flex flex-col items-center justify-center bg-gradient-to-b from-white-600 to-dark-300 border-solid border-[1px] border-white-600 mx-auto text-center z-[10] rounded-[30px]">
           <span className="text-white-100 pp-SB text-[10px] px-2 py-1 ">
             {renderTabTitle()}
@@ -172,6 +211,318 @@ export default function Home() {
         <br />
       </div>
       {/* Documentation */}
+      <div className="w-full min-h-[700px] flex flex-col items-center justify-start">
+        <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
+          Get Started
+        </p>
+        <p className="text-white-300 mt-2 pp-RG text-1xl z-[10] ">
+          Get started with <span className="text-white-100 pp-EB">4Snap </span>
+          by following this steps below.
+        </p>
+        <br />
+        <div className="w-full h-auto px-4 py-9 md:max-w-[80%] mx-auto flex flex-wrap items-start justify-between">
+          {/* Cards */}
+          <div className="w-full h-auto flex flex-col items-start justify-start z-[10] rounded-md bg-dark-300 border-solid border-[1px] border-white-600">
+            <br />
+            {/* Account Creation */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                1
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Account Creation
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                Get started by creating an account on{" "}
+                <span className="text-white-300 pp-EB">4Snap</span> using this{" "}
+                <Link href={"/auth"} className="text-white-100 underline pp-EB">
+                  LINK
+                </Link>
+              </p>
+            </div>
+            <br />
+            {/* NPM INSTALL */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-5 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                2
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Install 4Snap CLI
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                After creating an account on 4snap, you need to install 4Snap
+                cli npm package by running the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-400">{"// npm users"}</span>
+                  <br />
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    npm install 4snap
+                  </span>
+                  <br />
+                  <br />
+                  <span className="text-white-400">{"// yarn users"}</span>
+                  <br />
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    yarn add 4snap
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* 4Snap CLI Auth */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                3
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Authenticate 4Snap CLI
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                Before any command can be executed, you need to authenticate
+                4Snap cli using the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap login
+                  </span>
+                </p>
+              </div>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                The command would prompt you for a 4Snap token which can be
+                gotten from your settings page on 4Snap if youre currently
+                logged in.
+              </p>
+            </div>
+
+            {/* Create command */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                4
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Create commands
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                A command or collections of commands can be created either using
+                the web interface or cli. For 4snap users, command can be
+                created by running the below command:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap create
+                  </span>
+                </p>
+              </div>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                This would be a nice interaction which would work you through
+                the steps needed to create your favorite command or collections
+                of commands. Also, collections of commands are created by the
+                separation of{" "}
+                <span className="text-white-100 pp-EB">comma (,)</span>
+              </p>
+            </div>
+
+            {/* Execute command */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                5
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Executing command
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                You can execute either local or public command available on yout
+                machine or on the cloud. For{" "}
+                <span className="text-white-100 pp-SB">LOCAL</span> command, run
+                the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap run [COMMAND_NAME]
+                  </span>
+                </p>
+              </div>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                For <span className="text-white-100 pp-SB">PUBLIC</span>{" "}
+                command, run the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap run -p [COMMAND_NAME]
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Synchronization */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                6
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Synchronization
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                Sometimes, the command created via web interface might not be
+                what on your local machine, to fix this and make sure all
+                created collections of commands are available on your local
+                machine, you would need to{" "}
+                <span className="text-white-100 pp-SB">Synchronize</span> the
+                commands. This can be done using the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap sync
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* View saved commands */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                7
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                View saved commands
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                Viewing of saved commands or collections of commands locally can
+                be done using the command below:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap list
+                  </span>
+                </p>
+              </div>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                This would print out all available saved command in a table
+                format on your terminal as seen in the image above on tab view.
+              </p>
+            </div>
+
+            {/* Sharing of command */}
+            <div className="w-full p-3 border-b-solid border-b-[.5px] border-b-white-600 mt-7 flex flex-col items-start justify-start">
+              <span className=" text-3xl px-4 py-1 pp-EB rounded-[7px] bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500 text-white-100 ">
+                8
+              </span>
+              <p className="text-white-100 mt-2 text-center pp-EB text-1xl md:text-1xl z-[10]">
+                Sharing Command
+              </p>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                Sometimes, you may not have access to all commands, or perhaps
+                you want to share your saved commands with others, whether
+                publicly or privately. You can easily accomplish this using the
+                following command:
+              </p>
+              <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                <p className="text-[12px] font-mono ">
+                  <span className="text-white-300">$</span>
+                  <span className="text-white-100 ml-2 font-extrabold ">
+                    4snap share -u [USER_NAME] [COMMAND_NAME]
+                  </span>
+                </p>
+              </div>
+              <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                This would transfer the following command specified by the user
+                to the recipient. Also Note, this user must have an account on
+                4Snap for this to work effectively.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Explore section */}
+      <div className="w-full z-[10] min-h-[300px] mt-[120px] flex flex-col items-center justify-start">
+        <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
+          Explore
+        </p>
+        <p className="text-white-300 mt-2 pp-RG text-[15px] z-[10] ">
+          Explore publicly saved commands from{" "}
+          <span className="text-white-100 pp-EB">4Snap </span> users.
+        </p>
+        <br />
+        <div className="w-full flex items-start justify-start"></div>
+        <div className="w-full md:max-w-[80%] mx-auto flex flex-wrap items-start justify-between gap-5 px-9 py-4">
+          {allCmdQuery.isLoading && (
+            <div className="w-full flex items-center justify-center">
+              <Spinner color="#fff" />
+            </div>
+          )}
+          {allCmdQuery.isLoading === false && allCmds.length > 0 ? (
+            allCmds.map((cmd) => (
+              <CommandLists name={cmd.name} id={cmd._id} key={cmd._id} />
+            ))
+          ) : (
+            <p className="text-white-300 mt-2 pp-RG text-[15px] z-[10] ">
+              No public commands from
+              <span className="text-white-100 pp-EB">4Snap </span> users.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="w-full z-[10] min-h-[120px] mt-7 bg-dark-600"></div>
     </div>
+  );
+}
+
+interface CommandListProps {
+  name: string;
+  id: string;
+  key: any;
+}
+
+function CommandLists({ name, id, key }: CommandListProps) {
+  const copyToken = () => {
+    const { location } = window;
+    const url = `4snap run ${name}`;
+    // copyToClipboard(url);
+    // toast.success("command copied.");
+  };
+
+  return (
+    <button
+      data-id={id}
+      key={key}
+      className={`w-full md:w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100 z-[10]`}
+    >
+      <div className="w-[50px] h-[50px] flex items-center justify-center p-4 rounded-lg border-solid border-[.5px] border-white-600 ">
+        <span className="text-2xl">📦</span>
+      </div>
+      <div className="w-full flex flex-col items-start justify-start ml-2 gap-2">
+        <p className="text-white-100 pp-SB text-[14px]">
+          {name ?? "Meeting Name"}
+        </p>
+        <div className="w-full mr-3 flex flex-wrap items-start justify-start gap-2">
+          <span className="text-white-300 font-mono text-[10px]">{`4snap run ${name}`}</span>
+        </div>
+      </div>
+      <button
+        className="ml-2 px-3 py-3 flex items-center justify-center border-solid border-[1px] border-white-600 scale-[.95] hover:scale-[1] transition-all pp-EB text-[13px] rounded-lg"
+        onClick={copyToken}
+      >
+        <BiCopy color="#ccc" />
+      </button>
+    </button>
   );
 }
