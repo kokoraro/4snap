@@ -8,3 +8,4 @@
 - `auth`
 - `whoami`
 - `share`
+- `create`

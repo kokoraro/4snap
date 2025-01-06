@@ -16,7 +16,6 @@ import {
   retrieveInAppCommands,
 } from "../../http";
 import { HandleCommandResponse } from "../../util/response";
-import isAuthenticated from "../../util/isAuthenticated";
 import withAuth from "../../util/withAuth";
 import Modal from "../../components/Modal";
 
@@ -296,10 +295,4 @@ function CommandLists({
       </button>
     </button>
   );
-}
-
-export async function getServerSideProps(context) {
-  // getServerSideProps runs server-side only and will never execute on the client browser
-  // this allows the safe use of a private Passage API Key
-  return await serverPassageAuth(context);
 }
