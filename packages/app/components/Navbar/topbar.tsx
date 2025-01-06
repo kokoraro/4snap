@@ -13,7 +13,7 @@ function TopBar() {
   const [userInfo, setUserInfo] = useState<any>({});
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userData"));
+    const userInfo = JSON.parse(localStorage.getItem("@userInfo"));
     setUserInfo(userInfo);
   }, []);
 
@@ -88,12 +88,9 @@ function TopBar() {
                 </MenuList>
               </Menu>
             </li>
-            <li className="text-white-200 text-[13.5px] mb-2 py-1 pp-RG flex items-center justify-center ">
+            <li className="text-white-200 text-[13.5px] mb-2 py-2 pp-RG flex items-center justify-center ">
               <ImageTag
-                src={
-                  userInfo?.image ??
-                  "https://api.dicebear.com/5.x/micah/svg?seed=Baby"
-                }
+                src={`https://api.dicebear.com/5.x/micah/svg?seed=${userInfo?.username}`}
                 className="bg-dark-200 border-solid border-[1px] border-blue-300 rounded-[100%] w-[30px] mr-2 "
               />
               {/* <img
@@ -104,7 +101,6 @@ function TopBar() {
                 <p className="text-white-100 pp-EB">
                   {userInfo?.username ?? "N/A"}
                 </p>
-                <small className="text-white-200">Developer</small>
               </div>
             </li>
           </ul>
