@@ -5,6 +5,7 @@ import {
   createCmd,
   execCmd,
   listCommands,
+  shareCmd,
   syncCmd,
   whoami,
 } from "./commands/index.js";
@@ -49,6 +50,16 @@ program
   .action(async (command, options) => {
     const isPublic = options.p ? options.p : false;
     await execCmd(isPublic, command);
+  });
+
+program
+  .command("share <command>")
+  .option("-u <user>", "4Snap username")
+  .alias("sh")
+  .description("Share a command to different user.")
+  .action(async (command, options) => {
+    const username = options.u ? options.u : null;
+    await shareCmd(username, command);
   });
 
 program.parse();
