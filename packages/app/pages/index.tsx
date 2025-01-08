@@ -1,13 +1,5 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "@/styles/Home.module.css";
 import ImageTag from "../components/Image";
-import {
-  AiFillPlusCircle,
-  AiOutlineCloudSync,
-  AiOutlineDownload,
-  AiOutlineUserAdd,
-} from "react-icons/ai";
+import { AiFillPlusCircle, AiOutlineCloudSync } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { BsViewList } from "react-icons/bs";
 import { IoShareOutline } from "react-icons/io5";
