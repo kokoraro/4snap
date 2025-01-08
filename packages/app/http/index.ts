@@ -95,3 +95,12 @@ export const deleteCliCommands = async (data: any) => {
     return e.response.data ?? { message: e.message };
   }
 };
+
+export const retrieveAllCommands = async () => {
+  try {
+    const res = await $http.get(`/command/get?id=${genRandNum()}`);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
