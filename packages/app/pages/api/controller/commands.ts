@@ -20,6 +20,30 @@ export default class CommandController extends BaseController {
     this.shareCliCmdSchema = ShareCommandSchema;
   }
 
+  async getAllCommands(req: NextApiRequest, res: NextApiResponse) {
+    const allCommands = await CommandsModel.find();
+
+    const publicCmds = [];
+
+    if (allCommands.length > 0) {
+      allCommands.forEach((cmd) => {
+        if (cmd.public === true) {
+          if (!publicCmds.includes(cmd.name)) {
+            publicCmds.push(cmd);
+          }
+        }
+      });
+    }
+
+    this.success(
+      res,
+      "--allCommands/success",
+      `Commands fetched`,
+      200,
+      publicCmds
+    );
+  }
+
   // web only
   async getAllInAppCommands(req: NextApiRequest, res: NextApiResponse) {
     const userId = req["userId"];
