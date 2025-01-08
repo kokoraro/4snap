@@ -5,6 +5,8 @@ import { sleep } from "../helpers/index.js";
 import shell from "shelljs";
 import { directoryExists } from "../helpers/fileManager.js";
 import { getCmdByName } from "../helpers/http.js";
+import { $, execaCommand, execaSync } from "execa";
+import spawn from "cross-spawn";
 
 export default async function executeCmd(
   isPublic: boolean,
@@ -120,63 +122,75 @@ async function executePublicCmd(commandName: string) {
 
 async function executeDynamicCommand(cmd: string, cmdName: string) {
   const splittedCmd = cmd.split(",");
-  let dynamicVarName = "";
-  let ecmd = [];
+  let splittedDyVar = [];
+  let count = 0;
+  let mergedCmd = "";
   const sp = spinner();
-  for (let i = 0; i < splittedCmd.length; i++) {
-    const dVar = splittedCmd[i].split(" ").filter((v) => v.startsWith("$"));
-    const containDVar = splittedCmd[i].includes("$");
-    if (containDVar && i === 0) {
-      const dynamicVarInp = await text({
-        message: `${
-          dVar[i].length === 1 ? "Variable name" : dVar[i].replace("$", "")
-        }`,
-        placeholder: "project-name",
-        validate(value): string | void {
-          if (value.length === 0) return `Value is required!`;
-        },
-      });
 
-      if (isCancel(dynamicVarInp)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
+  // extract dynamic variable's from command
+  splittedCmd.forEach((cmd) => {
+    const dVar = cmd.split(" ").filter((v) => v.startsWith("$"));
+    dVar.forEach((v) => {
+      if (!splittedDyVar.includes(v)) {
+        splittedDyVar.push(v);
       }
+    });
+  });
 
-      dynamicVarName = dynamicVarInp as string;
+  // construct an executable command
+  while (count < splittedDyVar.length) {
+    const v = splittedDyVar[count];
+    const dynamicVarInp = await text({
+      message: `${v.length === 1 ? "Variable name" : v.replace("$", "")}`,
+      placeholder: "value",
+      validate(value): string | void {
+        if (value.length === 0) return `Value is required!`;
+      },
+    });
+
+    if (isCancel(dynamicVarInp)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
     }
 
-    const formattedCommand = splittedCmd[i].replace(
-      /\$(?!\w+)/g,
-      dynamicVarName
-    );
-    ecmd.push(formattedCommand);
-  }
+    count++;
 
-  const joinedCmd = ecmd.join(" && ");
+    if (mergedCmd.length === 0) {
+      mergedCmd = splittedCmd.join(" &&").replace(v, dynamicVarInp);
+    }
+    if (mergedCmd.length > 0) {
+      mergedCmd = mergedCmd.replace(v, dynamicVarInp);
+    }
+  }
 
   sp.start("Starting execution..");
 
-  // check if directory name exists.
-  const dirExists = directoryExists(dynamicVarName);
-
-  if (dirExists) {
-    sp.stop(
-      chalk.redBright(
-        `\n Failed to execute '${cmdName}'!, ${dynamicVarName} already exist. \n`
-      )
-    );
-    process.exit(1);
-  }
-
   await sleep(1);
+  mergedCmd.split("&&").forEach(async (c) => {
+    const commandParts = c.trim().split(" ");
+    if (commandParts.length > 0) {
+      // Execute the command
+      const file = commandParts[0];
+      const args = commandParts.slice(1);
+      const childProcess = spawn(file, args, {
+        stdio: "ignore",
+      });
 
-  if (shell.exec(joinedCmd).code === 0) {
-    sp.stop(
-      chalk.yellowBright(
-        ` ✨ Successfully executed ${chalk.bold(chalk.underline(cmdName))} `
-      )
-    );
-  } else {
-    sp.stop(chalk.redBright(`\n Failed to execute '${cmdName}'!. \n`));
-  }
+      childProcess.on("close", (code) => {
+        if (code === 0) {
+          sp.stop(
+            chalk.yellowBright(
+              ` ✨ Successfully executed ${chalk.bold(
+                chalk.underline(cmdName)
+              )} `
+            )
+          );
+        } else {
+          sp.stop(
+            chalk.redBright(`\n\n Failed to execute '${cmdName}'!. \n`)
+          );
+        }
+      });
+    }
+  });
 }
