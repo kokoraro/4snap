@@ -166,31 +166,45 @@ async function executeDynamicCommand(cmd: string, cmdName: string) {
   sp.start("Starting execution..");
 
   await sleep(1);
-  mergedCmd.split("&&").forEach(async (c) => {
-    const commandParts = c.trim().split(" ");
-    if (commandParts.length > 0) {
-      // Execute the command
-      const file = commandParts[0];
-      const args = commandParts.slice(1);
-      const childProcess = spawn(file, args, {
-        stdio: "ignore",
-      });
 
-      childProcess.on("close", (code) => {
-        if (code === 0) {
-          sp.stop(
-            chalk.yellowBright(
-              ` ✨ Successfully executed ${chalk.bold(
-                chalk.underline(cmdName)
-              )} `
-            )
-          );
-        } else {
-          sp.stop(
-            chalk.redBright(`\n\n Failed to execute '${cmdName}'!. \n`)
-          );
-        }
-      });
+  const splittedMerged = mergedCmd.split("&&");
+
+  for (let i = 0; i < splittedMerged.length; i++) {
+    const commandParts = splittedMerged[i].trim().split(" ");
+    const file = commandParts[0];
+    const args = commandParts.slice(1);
+
+    try {
+      await executeCommand(file, args);
+      sp.stop(
+        chalk.yellowBright(
+          ` ✨ Successfully executed ${chalk.bold(chalk.underline(cmdName))} `
+        )
+      );
+    } catch (e) {
+      sp.stop(chalk.redBright(`Failed to execute '${cmdName}' command.`));
+      break; // Terminate the loop if an error occurs
     }
-  });
+  }
 }
+
+const executeCommand = (command, args) => {
+  return new Promise((resolve, reject) => {
+    const childProcess = spawn(command, args, {
+      stdio: "ignore",
+      shell: false,
+    });
+
+    childProcess.on("error", (error) => {
+      reject(error);
+    });
+
+    childProcess.on("exit", (code) => {
+      if (code === 0) {
+        resolve(true);
+      } else {
+        reject(new Error(`Command failed with exit code ${code}`));
+      }
+    });
+  });
+};
