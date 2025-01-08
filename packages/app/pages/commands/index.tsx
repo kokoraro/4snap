@@ -149,7 +149,6 @@ function Commands() {
               allCmds.map((d, i) => (
                 <CommandLists
                   name={d.name}
-                  slug={d.slug}
                   id={d._id}
                   key={d._id}
                   deleteCommand={deleteCommand}
