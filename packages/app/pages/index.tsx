@@ -81,7 +81,7 @@ export default function Home() {
         }
       );
     }
-  }, [allCmdQuery.data]);
+  }, [allCmdQuery.data, allCmdQuery]);
 
   return (
     <div className="w-full h-screen overflow-x-hidden scroll-smooth pattern-bg">
