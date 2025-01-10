@@ -7,6 +7,7 @@ import {
   listCommands,
   shareCmd,
   syncCmd,
+  viewCmd,
   whoami,
 } from "./commands/index.js";
 
@@ -41,6 +42,14 @@ program
   .alias("sy")
   .description("Synchronize all local command..")
   .action(syncCmd);
+
+program
+  .command("view <command>")
+  .alias("v")
+  .description("View specific command")
+  .action(async (command) => {
+    await viewCmd(command);
+  });
 
 program
   .command("run <command>")

@@ -23,6 +23,14 @@ function Commands() {
   const isReady = useIsReady();
   const [allCmds, setAllCmds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedCmd, setSelectedCmd] = useState<{
+    command: string;
+    name: string;
+    _id: string;
+    description: string;
+    public: boolean;
+  }>({ command: "", name: "", _id: "", description: "", public: false });
   const [inpData, setInpData] = useState({
     name: "",
     commands: "",
@@ -40,6 +48,14 @@ function Commands() {
   );
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  const handleSelectingCmdList = (id: string) => {
+    const filteredCmd = allCmds.filter((c) => c._id === id);
+    if (filteredCmd.length > 0) {
+      setSelectedCmd(filteredCmd[0]);
+      setIsViewModalOpen(!isViewModalOpen);
+    }
+  };
 
   useEffect(() => {
     if (
@@ -153,6 +169,7 @@ function Commands() {
                   key={d._id}
                   deleteCommand={deleteCommand}
                   loadingStack={loadingStack}
+                  handleSelectingCmdList={handleSelectingCmdList}
                 />
               ))
             ) : null}
@@ -165,6 +182,8 @@ function Commands() {
           </div>
         </div>
       )}
+
+      {/* Create command modal */}
       {isModalOpen && (
         <Modal
           isBlurBg
@@ -228,6 +247,49 @@ function Commands() {
           </div>
         </Modal>
       )}
+
+      {/* View command info modal */}
+      {isViewModalOpen && (
+        <Modal
+          isBlurBg
+          isOpen={isViewModalOpen}
+          showCloseIcon
+          onClose={() => setIsViewModalOpen(!isViewModalOpen)}
+        >
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
+              <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
+                <p className="text-white-100 text-[18px] pp-SB">
+                  {selectedCmd?.name}
+                </p>
+              </div>
+              <br />
+              <div className="w-full px-3 flex flex-col items-start justify-start mb-3">
+                <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                  <span className="animate-pulse mr-2 relative">
+                    {selectedCmd?.public ? "🟢" : "🔴"}
+                  </span>
+                  {selectedCmd?.description}
+                </p>
+                <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                  <p className="text-[12px] font-mono ">
+                    <span className="text-white-400">
+                      {"// 4snap logged in users"}
+                    </span>
+                    <br />
+                    <span className="text-white-300">$</span>
+                    <span className="text-white-100 ml-2 font-extrabold ">
+                      {`4snap run ${selectedCmd?.name ?? ""}`}
+                    </span>
+                    <br />
+                    <br />
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
     </MainDashboardLayout>
   );
 }
@@ -238,6 +300,7 @@ interface CommandListProps {
   name: string;
   id: string;
   deleteCommand: (id: string) => void;
+  handleSelectingCmdList: (id: string) => void;
   loadingStack: { id: string }[];
   key: any;
 }
@@ -248,6 +311,7 @@ function CommandLists({
   key,
   deleteCommand,
   loadingStack,
+  handleSelectingCmdList,
 }: CommandListProps) {
   const copyToken = () => {
     const { location } = window;
@@ -264,6 +328,7 @@ function CommandLists({
       data-id={id}
       key={key}
       className={`w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100`}
+      onClick={() => handleSelectingCmdList(id)}
     >
       <div className="w-[50px] h-[50px] flex items-center justify-center p-4 rounded-lg border-solid border-[.5px] border-white-600 ">
         <span className="text-2xl">📦</span>
