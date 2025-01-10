@@ -34,6 +34,7 @@ function Commands() {
   const [inpData, setInpData] = useState({
     name: "",
     commands: "",
+    description: "",
   });
   const [loadingStack, setLoadingStack] = useState<{ id: string }[]>([]);
   const getCommandQuery = useQuery({
@@ -114,21 +115,28 @@ function Commands() {
   }, [deleteCommandMutation.data]);
 
   function createCommand() {
-    const { name, commands } = inpData;
+    const { name, commands, description } = inpData;
     if (isEmpty(name) || isEmpty(commands)) {
-      toast.error("some fields are empty.");
+      toast.error("command name cant be empty.");
       return;
     }
     if (!isValidCliCommand(commands)) {
       toast.error("Invalid command.");
       return;
     }
-    createCommandMutation.mutate({ name, command: commands });
+    if (!isValidCliCommand(description)) {
+      toast.error("description can't be empty.");
+      return;
+    }
+    createCommandMutation.mutate({ name, command: commands, description });
   }
 
   function deleteCommand(id: string) {
-    setLoadingStack((prev) => [...prev, { id }]);
-    deleteCommandMutation.mutate({ id });
+    const confirm = window.confirm("Are you sure about this action?");
+    if (confirm) {
+      setLoadingStack((prev) => [...prev, { id }]);
+      deleteCommandMutation.mutate({ id });
+    }
   }
 
   return (
@@ -212,6 +220,20 @@ function Commands() {
                     }))
                   }
                   defaultValue={inpData.name}
+                />
+                <br />
+                <input
+                  type="text"
+                  className="w-full px-3 py-3 outline-none text-[14px] bg-dark-100 text-white-100 font-mono rounded-md"
+                  placeholder="Description"
+                  maxLength={60}
+                  onChange={(e) =>
+                    setInpData((prev) => ({
+                      ...prev,
+                      ["description"]: e.target.value,
+                    }))
+                  }
+                  defaultValue={inpData.description}
                 />
                 <br />
                 <textarea
@@ -324,16 +346,18 @@ function CommandLists({
   const currentStack = mainStack.length === 0 ? null : mainStack;
 
   return (
-    <button
+    <div
       data-id={id}
       key={key}
       className={`w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100`}
-      onClick={() => handleSelectingCmdList(id)}
     >
       <div className="w-[50px] h-[50px] flex items-center justify-center p-4 rounded-lg border-solid border-[.5px] border-white-600 ">
         <span className="text-2xl">📦</span>
       </div>
-      <div className="w-full flex flex-col items-start justify-start ml-2 gap-2">
+      <div
+        className="w-full flex flex-col items-start cursor-pointer justify-start ml-2 gap-2"
+        onClick={() => handleSelectingCmdList(id)}
+      >
         <p className="text-white-100 pp-SB text-[14px]">
           {name ?? "Meeting Name"}
         </p>
@@ -348,6 +372,7 @@ function CommandLists({
         <BiCopy color="#ccc" />
       </button>
       <button
+        data-name={"deleteButton"}
         className="ml-2 px-3 py-3 flex items-center justify-center border-solid border-[1px] border-white-600 scale-[.95] hover:bg-red-305 hover:text-white-100 hover:scale-[1] transition-all pp-EB text-[13px] rounded-lg"
         onClick={() => deleteCommand(id)}
       >
@@ -357,6 +382,6 @@ function CommandLists({
           <AiFillDelete />
         )}
       </button>
-    </button>
+    </div>
   );
 }
