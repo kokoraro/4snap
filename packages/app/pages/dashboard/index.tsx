@@ -11,6 +11,7 @@ import withAuth from "../../util/withAuth";
 import Modal from "../../components/Modal";
 import { isEmpty } from "../../util";
 import { toast } from "react-hot-toast";
+import DashboardHeader from "../../components/DashboardHeader";
 
 function Dashboard() {
   const isReady = useIsReady();
@@ -102,12 +103,13 @@ function Dashboard() {
 
   return (
     <MainDashboardLayout activeTab="dashboard">
+      <DashboardHeader />
       {!isReady ? (
         <div className="w-full h-screen flex flex-col items-center justify-center">
           <Spinner color="#3F7EEE" />
         </div>
       ) : (
-        <div className="w-full">welcome</div>
+        <div className="w-full"></div>
       )}
       {showModal && (
         <Modal isBlurBg isOpen={true} fixed>
