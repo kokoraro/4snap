@@ -3,6 +3,7 @@ import Joi from "joi";
 export const CreateCliAndInAppCmdSchema = Joi.object({
   name: Joi.string().required(),
   command: Joi.string().required(),
+  description: Joi.string().required().max(60),
   public: Joi.boolean().optional(),
 });
 
