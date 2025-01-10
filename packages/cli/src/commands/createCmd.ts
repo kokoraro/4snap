@@ -62,6 +62,19 @@ export default async function createCommand() {
       process.exit(0);
     }
 
+    const description = await text({
+      message: "Description (max 60): ",
+      placeholder: "Describe what this command does...",
+      validate(value): string | void {
+        if (value.length === 0) return `Value is required!`;
+      },
+    });
+
+    if (isCancel(description)) {
+      cancel("Operation cancelled.");
+      process.exit(0);
+    }
+
     // @ts-ignore
     const cliName = slugify(cmdName, { lower: true, trim: true });
     const Pub = isPublic === "public" ? true : false;
@@ -75,6 +88,7 @@ export default async function createCommand() {
       name: cliName,
       public: Pub,
       command: commands,
+      description,
     });
 
     if (
