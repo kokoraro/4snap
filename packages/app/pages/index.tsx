@@ -10,6 +10,9 @@ import { useQuery } from "react-query";
 import { retrieveAllCommands } from "../http";
 import { HandleCommandResponse } from "../util/response";
 import { Spinner } from "../components/Loader";
+import Modal from "../components/Modal";
+import { copyToClipboard } from "../util";
+import { toast } from "react-hot-toast";
 
 interface AllCmds {
   _id: string;
@@ -26,6 +29,42 @@ export default function Home() {
     queryFn: async () => await retrieveAllCommands(),
     queryKey: ["retrieveAllCommands"],
   });
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedCmd, setSelectedCmd] = useState<{
+    command: string;
+    name: string;
+    _id: string;
+    description: string;
+    public: boolean;
+  }>({ command: "", name: "", _id: "", description: "", public: false });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalPages = Math.ceil(allCmds.length / pageSize);
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentList = allCmds.slice(startIndex, endIndex);
+
+  const nextList = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevList = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleSelectingCmdList = (id: string) => {
+    const filteredCmd = allCmds.filter((c) => c._id === id);
+    if (filteredCmd.length > 0) {
+      setSelectedCmd(filteredCmd[0] as any);
+      setIsViewModalOpen(!isViewModalOpen);
+    }
+  };
 
   const defaultStyle = `hover:bg-gradient-to-b hover:from-white-600 hover:to-dark-300 border-solid border-[.5px] hover:border-white-600`;
 
@@ -69,7 +108,6 @@ export default function Home() {
         () => {},
         (data) => {
           setAllCmds(data);
-          console.log(data);
         }
       );
     }
@@ -447,21 +485,49 @@ export default function Home() {
         <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
           Explore
         </p>
-        <p className="text-white-300 mt-2 pp-RG text-[15px] z-[10] ">
+        <p className="text-white-300 mt-2 pp-RG text-[14px] z-[10] ">
           Explore publicly saved commands from{" "}
           <span className="text-white-100 pp-EB">4Snap </span> users.
         </p>
         <br />
-        <div className="w-full flex items-start justify-start"></div>
-        <div className="w-full md:max-w-[80%] mx-auto flex flex-wrap items-start justify-between gap-5 px-9 py-4">
+        <div className="w-full md:max-w-[80%] mx-auto flex items-start justify-start px-9 py-4">
+          <button
+            className={`ml-2 px-3 py-2 flex items-center justify-center border-solid border-[1px] ${
+              currentPage === 1
+                ? "text-white-300 bg-transparent cursor-not-allowed"
+                : "text-white-100 bg-blue-300"
+            } border-white-600 scale-[.95] hover:scale-[1] transition-all pp-SB text-[12px] rounded-md z-[10] `}
+            onClick={prevList}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <button
+            className={`ml-1 px-3 py-2 flex items-center justify-center border-solid border-[1px] ${
+              currentPage === totalPages
+                ? "text-white-300 bg-transparent cursor-not-allowed"
+                : "text-white-100 bg-blue-300"
+            } border-white-600 scale-[.95] hover:scale-[1] transition-all pp-SB text-[12px] rounded-md z-[10] `}
+            onClick={nextList}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        <div className="w-full md:max-w-[80%] mx-auto flex flex-wrap items-start justify-start gap-5 px-9 py-4">
           {allCmdQuery.isLoading && (
             <div className="w-full flex items-center justify-center">
               <Spinner color="#fff" />
             </div>
           )}
           {allCmdQuery.isLoading === false && allCmds.length > 0 ? (
-            allCmds.map((cmd) => (
-              <CommandLists name={cmd.name} id={cmd._id} key={cmd._id} />
+            currentList.map((cmd) => (
+              <CommandLists
+                handleSelectingCmdList={handleSelectingCmdList}
+                name={cmd.name}
+                id={cmd._id}
+                key={cmd._id}
+              />
             ))
           ) : (
             <p className="text-white-300 mt-2 pp-RG text-[15px] z-[10] ">
@@ -472,8 +538,51 @@ export default function Home() {
         </div>
       </div>
 
+      {/* View command info modal */}
+      {isViewModalOpen && (
+        <Modal
+          isBlurBg
+          isOpen={isViewModalOpen}
+          showCloseIcon
+          onClose={() => setIsViewModalOpen(!isViewModalOpen)}
+        >
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
+              <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
+                <p className="text-white-100 text-[18px] pp-SB">
+                  {selectedCmd?.name}
+                </p>
+              </div>
+              <br />
+              <div className="w-full px-3 flex flex-col items-start justify-start mb-3">
+                <p className="text-white-300 mt-2 pp-RG text-[12px] z-[10] ">
+                  <span className="animate-pulse mr-2 relative">
+                    {selectedCmd?.public ? "🟢" : "🔴"}
+                  </span>
+                  {selectedCmd?.description}
+                </p>
+                <div className="w-full bg-dark-100 rounded-md px-4 py-3 mt-3 flex items-start justify-start">
+                  <p className="text-[12px] font-mono ">
+                    <span className="text-white-400">
+                      {"// 4snap logged in users"}
+                    </span>
+                    <br />
+                    <span className="text-white-300">$</span>
+                    <span className="text-white-100 ml-2 font-extrabold ">
+                      {`4snap run ${selectedCmd?.name ?? ""}`}
+                    </span>
+                    <br />
+                    <br />
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       {/* Footer */}
-      <div className="w-full z-[10] min-h-[120px] mt-7 bg-dark-600"></div>
+      <div className="w-full h-auto z-[10] mt-7 bg-dark-600"></div>
     </div>
   );
 }
@@ -482,21 +591,27 @@ interface CommandListProps {
   name: string;
   id: string;
   key: any;
+  handleSelectingCmdList: (id: string) => void;
 }
 
-function CommandLists({ name, id, key }: CommandListProps) {
+function CommandLists({
+  name,
+  id,
+  key,
+  handleSelectingCmdList,
+}: CommandListProps) {
   const copyToken = () => {
-    const { location } = window;
-    const url = `4snap run ${name}`;
-    // copyToClipboard(url);
-    // toast.success("command copied.");
+    const command = `4snap run ${name}`;
+    copyToClipboard(command);
+    toast.success("command copied.");
   };
 
   return (
     <button
       data-id={id}
       key={key}
-      className={`w-full md:w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100 z-[10]`}
+      onClick={() => handleSelectingCmdList(id)}
+      className={`w-full md:w-auto h-auto flex items-start justify-start bg-dark-300 py-4 px-3 rounded-lg text-white-100 z-[10] border-transparent hover:border-solid border-[1px] hover:border-white-600  `}
     >
       <div className="w-[50px] h-[50px] flex items-center justify-center p-4 rounded-lg border-solid border-[.5px] border-white-600 ">
         <span className="text-2xl">📦</span>
