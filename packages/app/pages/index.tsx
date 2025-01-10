@@ -160,7 +160,7 @@ export default function Home() {
             Discover, Share, & Execute Commands Anytime Anywhere
           </p>
           <br />
-          <p className="text-white-300 pp-RG text-1xl z-[10] ">
+          <p className="text-white-300 pp-RG text-[12px] md:text-1xl z-[10] ">
             Empower yourself with{" "}
             <span className="text-white-100 pp-EB">4Snap</span>, the ultimate
             command companion. Carry your favorite commands in your pocket,
@@ -170,13 +170,13 @@ export default function Home() {
       </div>
       {/* Content */}
       <div className="w-full min-h-[750px] flex flex-col items-center justify-center">
-        <div className="w-auto max-w-[300px] flex flex-col items-center justify-center bg-gradient-to-b from-white-600 to-dark-300 border-solid border-[1px] border-white-600 mx-auto text-center z-[10] rounded-[30px]">
+        <div className="w-auto max-w-[300px]  md:max-w-[300px] flex flex-col items-center justify-center bg-gradient-to-b from-white-600 to-dark-300 border-solid border-[1px] border-white-600 mx-auto text-center z-[10] rounded-[30px]">
           <span className="text-white-100 pp-SB text-[10px] px-2 py-1 ">
             {renderTabTitle()}
           </span>
         </div>
         <br />
-        <div className="w-auto max-w-[400px] z-[10] bg-gradient-to-b from-dark-300 to-dark-300 border-solid border-[1px] border-white-600 p-1 rounded-[10px] flex items-start justify-start shadow-2xl ">
+        <div className="w-auto max-w-[380px] md:max-w-[400px] z-[10] bg-gradient-to-b from-dark-300 to-dark-300 border-solid border-[1px] border-white-600 p-1 rounded-[10px] flex items-start justify-start shadow-2xl ">
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "create"
@@ -245,7 +245,7 @@ export default function Home() {
         <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
           Get Started
         </p>
-        <p className="text-white-300 mt-2 pp-RG text-1xl z-[10] ">
+        <p className="text-white-300 text-center  mt-2 pp-RG text-[12px] md:text-1xl z-[10] ">
           Get started with <span className="text-white-100 pp-EB">4Snap </span>
           by following this steps below.
         </p>
@@ -485,7 +485,7 @@ export default function Home() {
         <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
           Explore
         </p>
-        <p className="text-white-300 mt-2 pp-RG text-[14px] z-[10] ">
+        <p className="text-white-300 mt-2 pp-RG text-[12px] md:text-[14px] z-[10] ">
           Explore publicly saved commands from{" "}
           <span className="text-white-100 pp-EB">4Snap </span> users.
         </p>
@@ -547,7 +547,7 @@ export default function Home() {
           onClose={() => setIsViewModalOpen(!isViewModalOpen)}
         >
           <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
+            <div className="w-[300px] md:w-[400px] h-auto rounded-md bg-dark-300 border-solid border-[.5px] border-white-600 ">
               <div className="w-full border-b-solid border-b-[.5px] border-b-white-600 flex flex-col items-center justify-center py-2">
                 <p className="text-white-100 text-[18px] pp-SB">
                   {selectedCmd?.name}
