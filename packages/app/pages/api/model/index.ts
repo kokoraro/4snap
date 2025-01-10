@@ -24,6 +24,7 @@ const commandsSchema = new Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },
   command: { type: String, required: true },
+  description: { type: String, required: true },
   public: { type: Boolean, default: false },
 });
 
