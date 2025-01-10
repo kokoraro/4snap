@@ -5,7 +5,6 @@ import { sleep } from "../helpers/index.js";
 import shell from "shelljs";
 import { directoryExists } from "../helpers/fileManager.js";
 import { getCmdByName } from "../helpers/http.js";
-import { $, execaCommand, execaSync } from "execa";
 import spawn from "cross-spawn";
 
 export default async function executeCmd(
