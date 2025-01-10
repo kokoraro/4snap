@@ -152,6 +152,14 @@ export default function Home() {
           </svg>
           <p className="text-white-100 pp-EB text-[20px] ">4Snap</p>
         </div>
+        <div className="w-auto flex items-center justify-center">
+          <Link
+            href="/auth"
+            className="px-6 py-2 text-[12px] rounded-[30px] bg-blue-300 text-white-100 pp-SB z-[10] scale-[.95] hover:scale-[1] transition-all "
+          >
+            Login
+          </Link>
+        </div>
       </div>
       {/* header */}
       <div className="w-full h-auto min-h-[300px] z-[10] py-4 mt-7">

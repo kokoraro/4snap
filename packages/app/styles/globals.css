@@ -335,3 +335,61 @@ textarea::placeholder {
   background-repeat: no-repeat;
   background-position: center;
 }
+
+/* PASSAGE AUTH STYLE CONFIG */
+/* Default values shown */
+
+passage-auth {
+  /* Passage Container Styles */
+  --passage-container-background: #181920;
+  --passage-container-background-color: #ffffff;
+
+  --passage-container-max-width: 220px;
+  --passage-container-margin: auto;
+  --passage-container-padding: 30px 30px 20px;
+  --passage-error-color: #ff0000;
+
+  /* Body Font Styles */
+  --passage-body-font-family: Poppins-Regular;
+  --passage-body-font-size: 14px;
+  --passage-body-font-weight: 400;
+  --passage-body-text-color: #fff;
+
+  /* Header Font Styles */
+  --passage-header-font-family: Poppins-ExtraBold;
+  --passage-header-font-weight: 700;
+  --passage-header-text-color: #fff;
+  --passage-header-font-size: 24px;
+
+  /* Button Styles */
+  --passage-button-font-size: 13px;
+  --passage-button-font-weight: 400;
+  --passage-button-width: 70%;
+  --passage-button-border-radius: 75px;
+
+  /* Color Palette */
+  --passage-onprimary-color: #fff; /* text color on primary control background */
+  --passage-primary-color: #000; /* main color used for controls */
+
+  --passage-onhover-color: #fff;
+  --passage-hover-color: #4d4d4d;
+
+  --passage-onactive-color: #fff;
+  --passage-active-color: #6b6b6b;
+
+  /* Email and Phone Input Box Styles */
+  --passage-control-border-radius: 5px;
+  --passage-control-border-color: #dbdbdb;
+}
+
+passage-profile,
+passage-passkey-table {
+  /* All passage-auth styles still apply */
+
+  /* Table Styles */
+  --passage-table-header-border-color: #d7d7d7;
+  --passage-table-row-hover-color: #e0e0e0;
+  --passage-table-row-border-color: #e8e8e8;
+  --passage-table-paginator-selected-color: #d7d7d7;
+  --passage-table-paginator-hover-color: #e8e8e8;
+}
