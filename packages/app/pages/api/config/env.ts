@@ -10,7 +10,7 @@ const ENV = {
   clientUrl:
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
-      : "https://paycode.co",
+      : "https://4snapp.vercel.app",
   passageAppId: process.env.PASSAGE_APP_ID,
   passageApiKey: process.env.PASSAGE_API_KEY,
 };
