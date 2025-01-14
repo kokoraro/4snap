@@ -15,6 +15,10 @@ export default function Document() {
           content="https://raw.githubusercontent.com/Benrobo/4snap/main/packages/app/public/screenshots/4snap-bg.png"
         />
         <meta property="og:title" content="4snap: Command Snippet Manager" />
+        <meta
+          property="og:description"
+          content="Discover, Share, & Execute Commands Anytime Anywhere"
+        />
       </Head>
       <title>4snap</title>
       <body>
