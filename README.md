@@ -1,5 +1,7 @@
 # 4snap
 
+#### Discover, Share, & Execute Commands Anytime Anywhere
+
 ![4snap image](https://raw.githubusercontent.com/Benrobo/4snap/main/packages/app/public/screenshots/4snap-bg.png)
 
 ## Overview
