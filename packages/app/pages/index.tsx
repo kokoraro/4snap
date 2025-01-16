@@ -88,16 +88,15 @@ export default function Home() {
     return msg[activeTab];
   };
 
-  const renderTabImage = () => {
-    const img = {
-      create: `/screenshots/create.png?t=${Date.now()}`,
-      share: `/screenshots/share.png?t=${Date.now()}`,
-      exec: `/screenshots/exec.png?t=${Date.now()}`,
-      list: `/screenshots/list.png?t=${Date.now()}`,
-      sync: `/screenshots/sync.png?t=${Date.now()}`,
-    };
-    return img[activeTab];
+  const img = {
+    create: `/screenshots/create.png`,
+    share: `/screenshots/share.png`,
+    exec: `/screenshots/exec.png`,
+    list: `/screenshots/list.png`,
+    sync: `/screenshots/sync.png`,
   };
+
+  const renderTabImage = () => {};
 
   useEffect(() => {
     if (typeof allCmdQuery.data !== "undefined" || allCmdQuery.error !== null) {
@@ -231,7 +230,7 @@ export default function Home() {
             <span className="text-white-300 pp-SB text-[12px] ">Execute</span>
           </button>
         </div>
-        <div className="w-full md:w-[400px] px-5 mt-8 flex flex-col items-center justify-center">
+        <div className="w-full md:w-[400px] px-5 mt-8 flex flex-col items-center justify-center relative">
           {/* <div
             className="w-full max-w-[450px] h-[300px] bg-dark-300 z-[10] rounded-md"
             style={{
@@ -241,15 +240,41 @@ export default function Home() {
               backgroundSize: "cover",
             }}
           ></div> */}
-          <ImageTag
-            src={renderTabImage()}
-            className="w-full rounded-md shadow-2xl z-[10]"
-          />
+          {activeTab === "create" && (
+            <ImageTag
+              src={img.create}
+              className="w-full absolute top-[-10px] rounded-md shadow-2xl z-[10]"
+            />
+          )}
+          {activeTab === "list" && (
+            <ImageTag
+              src={img.list}
+              className="w-full absolute top-[-10px] rounded-md shadow-2xl z-[10]"
+            />
+          )}
+          {activeTab === "sync" && (
+            <ImageTag
+              src={img.sync}
+              className="w-full absolute top-[-10px] rounded-md shadow-2xl z-[10]"
+            />
+          )}
+          {activeTab === "share" && (
+            <ImageTag
+              src={img.share}
+              className="w-full absolute top-[-10px] rounded-md shadow-2xl z-[10]"
+            />
+          )}
+          {activeTab === "exec" && (
+            <ImageTag
+              src={img.exec}
+              className="w-full absolute top-[-10px] rounded-md shadow-2xl z-[10]"
+            />
+          )}
         </div>
         <br />
       </div>
       {/* Documentation */}
-      <div className="w-full min-h-[700px] flex flex-col items-center justify-start">
+      <div className="w-full min-h-[700px] mt-20 flex flex-col items-center justify-start">
         <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
           Get Started
         </p>
