@@ -162,7 +162,7 @@ export default function Home() {
         </div>
       </div>
       {/* header */}
-      <div className="w-full h-auto min-h-[300px] z-[10] py-4 mt-7">
+      <div className="w-full h-auto z-[10] py-4 mt-7">
         <div className="w-full px-5 md:px-5 md:max-w-[70%] mx-auto text-center flex flex-col items-center justify-center">
           <p className="text-white-100 text-center pp-EB text-3xl md:text-5xl z-[10]">
             Discover, Share, & Execute Commands Anytime Anywhere
