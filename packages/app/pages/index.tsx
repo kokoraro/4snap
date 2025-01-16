@@ -517,7 +517,7 @@ export default function Home() {
                 : "text-white-100 bg-blue-300"
             } border-white-600 scale-[.95] hover:scale-[1] transition-all pp-SB text-[12px] rounded-md z-[10] `}
             onClick={nextList}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || currentPage === 1}
           >
             Next
           </button>
