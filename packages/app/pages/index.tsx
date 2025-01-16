@@ -184,7 +184,7 @@ export default function Home() {
           </span>
         </div>
         <br />
-        <div className="w-auto max-w-[380px] md:max-w-[400px] z-[10] bg-gradient-to-b from-dark-300 to-dark-300 border-solid border-[1px] border-white-600 p-1 rounded-[10px] flex items-start justify-start shadow-2xl ">
+        <div className="w-auto max-w-[380px] md:max-w-[400px] z-[10] bg-gradient-to-b from-dark-300 to-dark-300 border-solid border-[1px] border-white-600 p-1 rounded-[10px] flex items-start justify-start shadow-2xl scale-[.85] md:scale-[1] ">
           <button
             className={`w-[80px] h-[70px] flex flex-col items-center justify-center gap-1 outline-none px-5 py-3 rounded-md scale-[.95] ${defaultStyle} ${renderActiveStyle(
               "create"
@@ -517,7 +517,7 @@ export default function Home() {
                 : "text-white-100 bg-blue-300"
             } border-white-600 scale-[.95] hover:scale-[1] transition-all pp-SB text-[12px] rounded-md z-[10] `}
             onClick={nextList}
-            disabled={currentPage === totalPages || currentPage === 1}
+            disabled={currentPage === totalPages || allCmds.length === 0}
           >
             Next
           </button>
