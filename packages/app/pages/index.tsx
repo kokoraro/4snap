@@ -540,7 +540,7 @@ export default function Home() {
           ) : (
             <p className="text-white-300 mt-2 pp-RG text-[15px] z-[10] ">
               No public commands from
-              <span className="text-white-100 pp-EB">4Snap </span> users.
+              <span className="text-white-100 pp-EB"> 4Snap </span> users.
             </p>
           )}
         </div>
