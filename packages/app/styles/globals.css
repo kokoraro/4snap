@@ -6,17 +6,17 @@
 
 @font-face {
   font-family: Poppins-Regular;
-  src: url("/fonts/Poppins-Regular.ttf");
+  src: url("/fonts/Poppins-Regular.ttf?#iefix") format("ttf");
 }
 
 @font-face {
   font-family: Poppins-SemiBold;
-  src: url("/fonts/Poppins-SemiBold.ttf");
+  src: url("/fonts/Poppins-SemiBold.ttf?#iefix") format("ttf");
 }
 
 @font-face {
   font-family: Poppins-ExtraBold;
-  src: url("/fonts/Poppins-ExtraBold.ttf");
+  src: url("/fonts/Poppins-ExtraBold.ttf?#iefix") format("ttf");
 }
 
 html {
