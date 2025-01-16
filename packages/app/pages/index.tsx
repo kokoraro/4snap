@@ -90,11 +90,11 @@ export default function Home() {
 
   const renderTabImage = () => {
     const img = {
-      create: "/screenshots/create.png",
-      share: "/screenshots/share.png",
-      exec: "/screenshots/exec.png",
-      list: "/screenshots/list.png",
-      sync: "/screenshots/sync.png",
+      create: `/screenshots/create.png?t=${Date.now()}`,
+      share: `/screenshots/share.png?t=${Date.now()}`,
+      exec: `/screenshots/exec.png?t=${Date.now()}`,
+      list: `/screenshots/list.png?t=${Date.now()}`,
+      sync: `/screenshots/sync.png?t=${Date.now()}`,
     };
     return img[activeTab];
   };
@@ -512,7 +512,7 @@ export default function Home() {
           </button>
           <button
             className={`ml-1 px-3 py-2 flex items-center justify-center border-solid border-[1px] ${
-              currentPage === totalPages
+              currentPage === totalPages || allCmds.length === 0
                 ? "text-white-300 bg-transparent cursor-not-allowed"
                 : "text-white-100 bg-blue-300"
             } border-white-600 scale-[.95] hover:scale-[1] transition-all pp-SB text-[12px] rounded-md z-[10] `}
