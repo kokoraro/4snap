@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "../components/Layout";
 import { Toaster } from "react-hot-toast";
 import { Router } from "next/router";
 import nProgress from "nprogress";
+import "../styles/globals.css";
 import "../styles/ngProgress.css";
 
 // nprogress loader
