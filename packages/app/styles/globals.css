@@ -7,16 +7,25 @@
 @font-face {
   font-family: Poppins-Regular;
   src: url("/fonts/Poppins-Regular.ttf?#iefix") format("truetype");
+  src: url("/fonts/Poppins-Regular.ttf?#iefix") format("truetype"),
+    url("/fonts/Poppins-Regular.ttf?#iefix") format("font-ttf"),
+    url("/fonts/Poppins-Regular.ttf?#iefix") format("embedded-opentype");
 }
 
 @font-face {
   font-family: Poppins-SemiBold;
   src: url("/fonts/Poppins-SemiBold.ttf?#iefix") format("truetype");
+  src: url("/fonts/Poppins-SemiBold.ttf?#iefix") format("truetype"),
+    url("/fonts/Poppins-SemiBold.ttf?#iefix") format("font-ttf"),
+    url("/fonts/Poppins-SemiBold.ttf?#iefix") format("embedded-opentype");
 }
 
 @font-face {
   font-family: Poppins-ExtraBold;
   src: url("/fonts/Poppins-ExtraBold.ttf?#iefix") format("truetype");
+  src: url("/fonts/Poppins-ExtraBold.ttf?#iefix") format("truetype"),
+    url("/fonts/Poppins-ExtraBold.ttf?#iefix") format("font-ttf"),
+    url("/fonts/Poppins-ExtraBold.ttf?#iefix") format("embedded-opentype");
 }
 
 html {
