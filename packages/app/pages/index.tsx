@@ -243,7 +243,7 @@ export default function Home() {
           ></div> */}
           <ImageTag
             src={renderTabImage()}
-            className="w-full rounded-md shadow-2xl "
+            className="w-full rounded-md shadow-2xl z-[10]"
           />
         </div>
         <br />
