@@ -1,5 +1,7 @@
 # 4Snap
 
+![4snap image](https://raw.githubusercontent.com/Benrobo/4snap/main/packages/app/public/screenshots/4snap-bg.png)
+
 4Snap is a powerful command-line interface (CLI) tool that allows developers to create, manage, and share commands or collections of commands. With 4Snap, you can streamline your development workflow by saving and executing commonly used commands, whether they are local or public.
 
 ## Table of Contents
