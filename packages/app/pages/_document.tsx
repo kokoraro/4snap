@@ -19,6 +19,11 @@ export default function Document() {
           property="og:description"
           content="Discover, Share, & Execute Commands Anytime Anywhere"
         />
+        <link
+          rel="logo"
+          href="https://raw.githubusercontent.com/Benrobo/4snap/main/packages/app/public/logo.png"
+          type="image/png"
+        />
       </Head>
       <title>4snap</title>
       <body>
