@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import ImageTag from "../../components/Image";
+import ENV from "../api/config/env";
 
 function Login() {
   useEffect(() => {
@@ -19,7 +20,7 @@ function Login() {
         </Link>
       </div>
       <div className="w-full max-w-[400px] bg-dark-300 border-solid border-[2px] border-white-600 pp-SB z-[10] rounded-[10px] ">
-        <passage-auth app-id="Wk5nQ0hQ9KfcNaTv5kZlAkWt"></passage-auth>
+        <passage-auth app-id={ENV.passageAppId}></passage-auth>
       </div>
     </div>
   );
