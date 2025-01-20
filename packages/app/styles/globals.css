@@ -344,7 +344,7 @@ passage-auth {
   --passage-container-background: #181920;
   --passage-container-background-color: #ffffff;
 
-  --passage-container-max-width: 220px;
+  --passage-container-max-width: 300px;
   --passage-container-margin: auto;
   --passage-container-padding: 30px 30px 20px;
   --passage-error-color: #ff0000;
@@ -364,7 +364,7 @@ passage-auth {
   /* Button Styles */
   --passage-button-font-size: 13px;
   --passage-button-font-weight: 400;
-  --passage-button-width: 70%;
+  --passage-button-width: 100%;
   --passage-button-border-radius: 75px;
 
   /* Color Palette */
@@ -392,4 +392,12 @@ passage-passkey-table {
   --passage-table-row-border-color: #e8e8e8;
   --passage-table-paginator-selected-color: #d7d7d7;
   --passage-table-paginator-hover-color: #e8e8e8;
+}
+
+passage-auth::part(input) {
+  border-color: #dbdbdb;
+  color: #000;
+  width: 100%;
+  border-radius: 30px;
+  margin-top: 10px;
 }
