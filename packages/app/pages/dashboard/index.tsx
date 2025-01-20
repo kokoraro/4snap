@@ -213,7 +213,7 @@ interface AnanlyticsCardProps {
 function AnalyticsCard({ title, Icon, data, count }: AnanlyticsCardProps) {
   return (
     <div className="w-[300px] h-[150px] px-5 py-5 rounded-md bg-dark-200 flex flex-col items-start justify-start gap-5  relative overflowHidden shadow-lg border-[1px] border-solid border-white-600 ">
-      <div className="w-full z-[100] ">
+      <div className="w-full z-[10] ">
         <div className="top w-full flex items-center justify-between gap-2">
           <div className="flex items-center justify-start ">
             {Icon}
