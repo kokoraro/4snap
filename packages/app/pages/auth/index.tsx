@@ -19,7 +19,7 @@ function Login() {
           <p className="text-white-100 pp-EB text-[20px] ">4Snap</p>
         </Link>
       </div>
-      <div className="w-full max-w-[400px] bg-dark-300 border-solid border-[2px] border-white-600 pp-SB z-[10] rounded-[10px] ">
+      <div className="w-full max-w-[350px] bg-dark-300 border-solid border-[2px] border-white-600 pp-SB z-[10] rounded-[10px] overflow-hidden ">
         <passage-auth app-id={ENV.passageAppId}></passage-auth>
       </div>
     </div>
