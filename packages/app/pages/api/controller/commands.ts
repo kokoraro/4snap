@@ -247,6 +247,7 @@ export default class CommandController extends BaseController {
       .filter((n) => (/\s/g.test(n) ? n.replace(/\s/g, "-") : n))
       .join(",");
     const isPublic = payload["public"] ?? true;
+    const description = payload["description"].trim();
 
     const nameExists = await CommandsModel.findOne({ name: cliName });
 
@@ -265,6 +266,7 @@ export default class CommandController extends BaseController {
       name: formattedName,
       command: cmds,
       public: isPublic,
+      description,
     };
 
     await CommandsModel.create(collection);
