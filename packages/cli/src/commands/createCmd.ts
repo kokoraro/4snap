@@ -88,7 +88,7 @@ export default async function createCommand() {
       name: cliName,
       public: Pub,
       command: commands,
-      description,
+      description: description,
     });
 
     if (
@@ -97,6 +97,7 @@ export default async function createCommand() {
         "--auth/authorization-token-notfound",
         "--auth/invalid-token",
         "--createCliCommand/name-exists",
+        "--api/server-error",
       ].includes(resp?.code)
     ) {
       s.stop(`🚩 ${chalk.redBright(resp?.message)}`);
