@@ -6,6 +6,7 @@ import shell from "shelljs";
 import { directoryExists } from "../helpers/fileManager.js";
 import { getCmdByName } from "../helpers/http.js";
 import spawn from "cross-spawn";
+import { exec, execSync } from "node:child_process";
 
 export default async function executeCmd(
   isPublic: boolean,
@@ -53,7 +54,20 @@ async function executeLocalCmd(commandName: string) {
     const sp = spinner();
     sp.start("Starting execution..");
 
-    if (shell.exec(command.split(",").join(" && ")).code === 0) {
+    exec(command, { cwd: process.cwd() }, (err, stdout, stderr) => {
+      if (err || stderr) {
+        sp.stop(
+          chalk.redBright(
+            `Failed to execute '${chalk.underline(commandName)}': ${stderr}`
+          )
+        );
+        outro("Done");
+        return;
+      }
+
+      // output the given output from stdout
+      if (stdout) console.log(`\n ${stdout} \n`);
+
       sp.stop(
         chalk.yellowBright(
           ` ✨ Successfully executed ${chalk.bold(
@@ -61,9 +75,8 @@ async function executeLocalCmd(commandName: string) {
           )} `
         )
       );
-    } else {
-      sp.stop(chalk.redBright(`\n Failed to execute '${commandName}'!. \n`));
-    }
+      outro("Done");
+    });
   }
   outro("Done");
 }
@@ -98,7 +111,21 @@ async function executePublicCmd(commandName: string) {
         const sp = spinner();
         sp.start("Starting execution.. \n");
 
-        if (shell.exec(command.split(",").join(" && ")).code === 0) {
+        // execute command
+        exec(command, { cwd: process.cwd() }, (err, stdout, stderr) => {
+          if (err || stderr) {
+            sp.stop(
+              chalk.redBright(
+                `Failed to execute '${chalk.underline(commandName)}': ${stderr}`
+              )
+            );
+            outro("Done");
+            return;
+          }
+
+          // output the given output from stdout
+          if (stdout) console.log(`\n ${stdout} \n`);
+
           sp.stop(
             chalk.yellowBright(
               ` ✨ Successfully executed ${chalk.bold(
@@ -106,11 +133,8 @@ async function executePublicCmd(commandName: string) {
               )} `
             )
           );
-        } else {
-          sp.stop(
-            chalk.redBright(`\n Failed to execute '${commandName}'!. \n`)
-          );
-        }
+          outro("Done");
+        });
       }
     }
   } catch (e: any) {
@@ -162,48 +186,28 @@ async function executeDynamicCommand(cmd: string, cmdName: string) {
     }
   }
 
-  sp.start("Starting execution..");
+  sp.start("Starting execution");
 
   await sleep(1);
 
-  const splittedMerged = mergedCmd.split("&&");
-
-  for (let i = 0; i < splittedMerged.length; i++) {
-    const commandParts = splittedMerged[i].trim().split(" ");
-    const file = commandParts[0];
-    const args = commandParts.slice(1);
-
-    try {
-      await executeCommand(file, args);
+  // ! Still trying to work around toward executing commmands that requires input from stdinp / stdout.
+  exec(mergedCmd, { cwd: process.cwd() }, (err, stdout, stderr) => {
+    if (err || stderr) {
       sp.stop(
-        chalk.yellowBright(
-          ` ✨ Successfully executed ${chalk.bold(chalk.underline(cmdName))} `
+        chalk.redBright(
+          `Failed to execute '${chalk.underline(cmdName)}': ${stderr}`
         )
       );
-    } catch (e) {
-      sp.stop(chalk.redBright(`Failed to execute '${cmdName}' command.`));
-      break; // Terminate the loop if an error occurs
+      outro("Done");
     }
-  }
-}
-
-const executeCommand = (command, args) => {
-  return new Promise((resolve, reject) => {
-    const childProcess = spawn(command, args, {
-      stdio: "ignore",
-      shell: false,
-    });
-
-    childProcess.on("error", (error) => {
-      reject(error);
-    });
-
-    childProcess.on("exit", (code) => {
-      if (code === 0) {
-        resolve(true);
-      } else {
-        reject(new Error(`Command failed with exit code ${code}`));
-      }
-    });
+    console.log(stdout);
+    if (stdout) {
+      sp.stop(
+        chalk.redBright(
+          `Failed to execute '${chalk.underline(cmdName)}' command.`
+        )
+      );
+      outro("Done");
+    }
   });
-};
+}
