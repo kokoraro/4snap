@@ -40,6 +40,7 @@ export default function Settings() {
         }
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userTokenQuery.data]);
 
   useEffect(() => {
