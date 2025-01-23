@@ -52,21 +52,20 @@ async function executeLocalCmd(commandName: string) {
     await executeDynamicCommand(command, commandName);
   } else {
     const sp = spinner();
-    sp.start("Starting execution..");
+    sp.start("Executing..");
 
     exec(command, { cwd: process.cwd() }, (err, stdout, stderr) => {
-      if (err || stderr) {
+      if (err !== null) {
         sp.stop(
           chalk.redBright(
-            `Failed to execute '${chalk.underline(commandName)}': ${stderr}`
+            `Failed to execute '${chalk.underline(commandName)}': ${
+              err ?? stderr
+            }`
           )
         );
         outro("Done");
-        return;
+        process.exit(0);
       }
-
-      // output the given output from stdout
-      if (stdout) console.log(`\n ${stdout} \n`);
 
       sp.stop(
         chalk.yellowBright(
@@ -75,6 +74,8 @@ async function executeLocalCmd(commandName: string) {
           )} `
         )
       );
+      // output the given output from stdout
+      if (stdout) console.log(`\n ${stdout}`);
       outro("Done");
     });
   }
@@ -90,16 +91,17 @@ async function executePublicCmd(commandName: string) {
     const resp = await getCmdByName(commandName);
 
     sp.start("Fetching public commands...");
-    await sleep(1);
+    // await sleep(1);
 
     if (["--commandByName/notfound"].includes(resp?.code)) {
       sp.stop(`🚩 ${chalk.redBright(resp?.message)}`);
       outro("Done");
+      process.exit(1);
     }
 
     if (["--commandByName/success"].includes(resp?.code)) {
-      //   sp.stop(`✅ ${chalk.greenBright(resp?.message)}`);
-      sp.stop();
+      sp.stop(`✅ ${chalk.greenBright(resp?.message)}`);
+      // sp.stop();
 
       const data = resp?.data;
 
@@ -108,23 +110,23 @@ async function executePublicCmd(commandName: string) {
       if (command.includes("$")) {
         await executeDynamicCommand(command, commandName);
       } else {
-        const sp = spinner();
-        sp.start("Starting execution.. \n");
+        // const sp = spinner();
+
+        sp.start("Executing...");
 
         // execute command
         exec(command, { cwd: process.cwd() }, (err, stdout, stderr) => {
-          if (err || stderr) {
+          if (err !== null) {
             sp.stop(
               chalk.redBright(
-                `Failed to execute '${chalk.underline(commandName)}': ${stderr}`
+                `Failed to execute '${chalk.underline(commandName)}': ${
+                  err ?? stderr
+                }`
               )
             );
             outro("Done");
             return;
           }
-
-          // output the given output from stdout
-          if (stdout) console.log(`\n ${stdout} \n`);
 
           sp.stop(
             chalk.yellowBright(
@@ -133,6 +135,8 @@ async function executePublicCmd(commandName: string) {
               )} `
             )
           );
+          // output the given output from stdout
+          if (stdout) console.log(`\n ${stdout}`);
           outro("Done");
         });
       }
@@ -185,7 +189,7 @@ async function executeDynamicCommand(cmd: string, cmdName: string) {
     }
   }
 
-  sp.start("Starting execution");
+  sp.start("Executing...");
 
   await sleep(1);
 
@@ -204,12 +208,13 @@ async function executeDynamicCommand(cmd: string, cmdName: string) {
         outro("Done");
         process.exit(0);
       }
-      if (stdout) console.log(`\n ${stdout} \n`);
       sp.stop(
         chalk.yellowBright(
           ` ✨ Successfully executed ${chalk.bold(chalk.underline(cmdName))} `
         )
       );
+      if (stdout) console.log(`\n ${stdout} \n`);
+      outro("Done");
     }
   );
 }
