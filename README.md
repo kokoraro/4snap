@@ -12,14 +12,14 @@
 
 ### Getting Started
 
-- 1. Account Creation
-- 2. Install 4Snap CLI
-- 3. Authenticate 4Snap CLI
-- 4. Create Commands
-- 5. Executing Commands
-- 6. Synchronization
-- 7. View Saved Commands
-- 8. Sharing Command
+- Account Creation
+- Install 4Snap CLI
+- Authenticate 4Snap CLI
+- Create Commands
+- Executing Commands
+- Synchronization
+- View Saved Commands
+- Sharing Command
 
 ## Getting Started
 
@@ -34,10 +34,10 @@ Get started by creating an account on 4Snap using this [LINK](https://4snapp.ver
 After creating an account on 4Snap, you need to install the 4Snap CLI npm package. Use the following command to install it:
 
 ```sh
-// npm users
+# npm users
 $ npm install 4snap
 
-// yarn users
+# yarn users
 $ yarn add 4snap
 ```
 
@@ -106,3 +106,14 @@ $ 4snap share -u [USER_NAME] [COMMAND_NAME]
 ```
 
 Replace `[USER_NAME]` with the recipient's username and `[COMMAND_NAME]` with the name of the command you want to share.
+
+## Examples
+
+1. 👷🏻
+   Command meant to ease the process at which developers start a new project. for eg `mkdir project_name`, `cd project_name`, `touch file_name` can be shorten into `4snap run setup`.
+
+Here are lists of commands you could try out with 4snap.
+
+1. `mkdir $project_name,cd $project_name,touch $file_name`
+2. `npm list -g`
+3. `yarn create vite $appName --template $templateName`
