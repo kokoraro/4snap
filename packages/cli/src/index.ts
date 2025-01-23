@@ -83,7 +83,7 @@ program
     storage.delete("@authToken");
     storage.delete("@userInfo");
 
-    console.log(chalk.yellowBright(`\n ✨ Successfully logout. \n`));
+    console.log(chalk.yellowBright(`\n ✨ Successfully logged out. \n`));
   });
 
 program.parse();

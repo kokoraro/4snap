@@ -107,6 +107,14 @@ $ 4snap share -u [USER_NAME] [COMMAND_NAME]
 
 Replace `[USER_NAME]` with the recipient's username and `[COMMAND_NAME]` with the name of the command you want to share.
 
+### 9. Logout
+
+You can logout yourself from cli session using the command below
+
+```sh
+$ 4snap logout
+```
+
 ## Examples
 
 1. 👷🏻
