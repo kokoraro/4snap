@@ -20,7 +20,7 @@ function Login() {
         </Link>
       </div>
       <div className="w-full max-w-[350px] bg-dark-300 border-solid border-[2px] border-white-600 pp-SB z-[10] rounded-[10px] overflow-hidden ">
-        <passage-auth app-id={ENV.passageAppId}></passage-auth>
+        <passage-auth app-id={ENV.passageAppId ?? "None"}></passage-auth>
       </div>
     </div>
   );
