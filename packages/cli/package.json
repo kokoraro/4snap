@@ -1,6 +1,6 @@
 {
   "name": "4snap",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "license": "MIT",
   "main": "./dist/index.js",
   "type": "module",
