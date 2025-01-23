@@ -121,12 +121,13 @@ export default function Home() {
           <p className="text-white-100 pp-EB text-[20px] ">4Snap</p>
         </div>
         <div className="w-auto flex items-center justify-center">
-          <a
+          <Link
             href="/auth"
+            onClick={() => (location.href = "/auth")}
             className="px-6 py-2 text-[12px] rounded-[30px] bg-blue-300 text-white-100 pp-SB z-[10] scale-[.95] hover:scale-[1] transition-all "
           >
             Login
-          </a>
+          </Link>
         </div>
       </div>
       {/* header */}
@@ -144,12 +145,13 @@ export default function Home() {
           </p>
         </div>
         <div className="w-full mt-20 flex items-center justify-center">
-          <a
+          <Link
             href="/auth"
+            onClick={() => (location.href = "/auth")}
             className="px-6 py-3 text-[14px] md:text-[15px] rounded-[30px] bg-blue-300 text-white-100 pp-SB z-[10] scale-[.95] hover:scale-[1] transition-all "
           >
             Get Started
-          </a>
+          </Link>
         </div>
       </div>
       {/* Content */}

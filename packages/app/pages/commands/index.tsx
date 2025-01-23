@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from "next/router";
 import MainDashboardLayout from "../../components/Layout/mainDashboard";
 import useIsReady from "../../hooks/useIsReady";
