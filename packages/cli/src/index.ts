@@ -10,6 +10,8 @@ import {
   viewCmd,
   whoami,
 } from "./commands/index.js";
+import storage from "./config/index.js";
+import chalk from "chalk";
 
 const program = new Command();
 
@@ -69,6 +71,19 @@ program
   .action(async (command, options) => {
     const username = options.u ? options.u : null;
     await shareCmd(username, command);
+  });
+
+// logout
+program
+  .command("logout")
+  .alias("lg")
+  .description("Logout and clear all cached data.")
+  .action(() => {
+    storage.delete("@4snap_cmd");
+    storage.delete("@authToken");
+    storage.delete("@userInfo");
+
+    console.log(chalk.yellowBright(`\n ✨ Successfully logout. \n`));
   });
 
 program.parse();

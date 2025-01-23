@@ -8,7 +8,8 @@ export default async function whoami() {
   const userData = storage.get("@userInfo") as any;
 
   if (typeof userData === "undefined" || userData === null) {
-    console.log(chalk.redBright(`\n >>> Opps, no user info were found.`));
+    console.log(chalk.redBright(`\n >>> Opps, login to complete this action.`));
+    outro("Done");
     return;
   }
 
