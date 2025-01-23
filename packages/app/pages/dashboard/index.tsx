@@ -122,18 +122,10 @@ function Dashboard() {
     }
   }, [createUserMutation.data, createUserMutation]);
 
-  if (userInfoQuery.isLoading && isReady === false) {
-    return (
-      <div className="w-full h-screen flex flex-col items-center justify-center">
-        <Spinner color="#3F7EEE" />
-      </div>
-    );
-  }
-
   return (
     <MainDashboardLayout activeTab="dashboard">
       <DashboardHeader />
-      {!isReady ? (
+      {!isReady || userInfoQuery.isLoading ? (
         <div className="w-full h-screen flex flex-col items-center justify-center">
           <Spinner color="#3F7EEE" />
         </div>
