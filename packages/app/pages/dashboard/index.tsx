@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import MainDashboardLayout from "../../components/Layout/mainDashboard";
 import useIsReady from "../../hooks/useIsReady";
