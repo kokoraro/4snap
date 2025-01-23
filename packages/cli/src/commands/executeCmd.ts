@@ -78,7 +78,6 @@ async function executeLocalCmd(commandName: string) {
       outro("Done");
     });
   }
-  outro("Done");
 }
 
 async function executePublicCmd(commandName: string) {
@@ -95,6 +94,7 @@ async function executePublicCmd(commandName: string) {
 
     if (["--commandByName/notfound"].includes(resp?.code)) {
       sp.stop(`🚩 ${chalk.redBright(resp?.message)}`);
+      outro("Done");
     }
 
     if (["--commandByName/success"].includes(resp?.code)) {
@@ -140,7 +140,6 @@ async function executePublicCmd(commandName: string) {
   } catch (e: any) {
     sp.stop(`${chalk.redBright("Something went wrong, Try again later.")}`);
   }
-  outro("Done");
 }
 
 async function executeDynamicCommand(cmd: string, cmdName: string) {
@@ -191,23 +190,26 @@ async function executeDynamicCommand(cmd: string, cmdName: string) {
   await sleep(1);
 
   // ! Still trying to work around toward executing commmands that requires input from stdinp / stdout.
-  exec(mergedCmd, { cwd: process.cwd() }, (err, stdout, stderr) => {
-    if (err || stderr) {
+
+  exec(
+    mergedCmd,
+    { cwd: process.cwd(), timeout: 10000 },
+    (err, stdout, stderr) => {
+      if (err !== null) {
+        sp.stop(
+          chalk.redBright(
+            `Failed to execute '${chalk.underline(cmdName)}': ${err ?? stderr}`
+          )
+        );
+        outro("Done");
+        process.exit(0);
+      }
+      if (stdout) console.log(`\n ${stdout} \n`);
       sp.stop(
-        chalk.redBright(
-          `Failed to execute '${chalk.underline(cmdName)}': ${stderr}`
+        chalk.yellowBright(
+          ` ✨ Successfully executed ${chalk.bold(chalk.underline(cmdName))} `
         )
       );
-      outro("Done");
     }
-    console.log(stdout);
-    if (stdout) {
-      sp.stop(
-        chalk.redBright(
-          `Failed to execute '${chalk.underline(cmdName)}' command.`
-        )
-      );
-      outro("Done");
-    }
-  });
+  );
 }

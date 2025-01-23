@@ -12,6 +12,10 @@ import {
 } from "./commands/index.js";
 import storage from "./config/index.js";
 import chalk from "chalk";
+import checkUpdate from "./helpers/checkUpdate.js";
+
+// check for package update
+checkUpdate();
 
 const program = new Command();
 
