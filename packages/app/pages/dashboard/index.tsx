@@ -126,7 +126,7 @@ function Dashboard() {
     <MainDashboardLayout activeTab="dashboard">
       <DashboardHeader />
       {!isReady || userInfoQuery.isLoading ? (
-        <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="w-full h-auto mt-6 flex flex-col items-center justify-center">
           <Spinner color="#3F7EEE" />
         </div>
       ) : (
