@@ -45,8 +45,9 @@ function TopBar() {
     >
       <div className="w-full px-[2rem] flex items-center justify-between">
         <div className="w-auto left flex items-center justify-center">
-          <div className="w-auto flex items-center justify-center">
-            {/* <span className="text-white-200 ml-2 pp-EB text-[13px] ">showccial</span> */}
+          <div className="w-auto  flex items-center justify-center gap-2">
+            <ImageTag src="/logo.png" className="w-[20%] " />
+            <p className="text-white-100 pp-EB text-[15px] ">4Snap</p>
           </div>
         </div>
         <div className="w-auto px-7 left flex items-center justify-center">
