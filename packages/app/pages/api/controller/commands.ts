@@ -1,7 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import BaseController from "./base";
 import { isEmpty, isValidCliCommand } from "../../../util";
-import { CommandsModel, SettingsModel, UserModel } from "../model";
+import {
+  CommandsModel,
+  SettingsModel,
+  SharedCommandsModel,
+  UserModel,
+} from "../model";
 import {
   CreateCliAndInAppCmdSchema,
   DeleteCliAndInAppCmdSchema,
@@ -26,13 +31,15 @@ export default class CommandController extends BaseController {
     const publicCmds = [];
 
     if (allCommands.length > 0) {
-      allCommands.forEach((cmd) => {
-        if (cmd.public === true) {
-          if (!publicCmds.includes(cmd.name)) {
-            publicCmds.push(cmd);
-          }
+      for (const cmd of allCommands) {
+        if (
+          cmd.public === true &&
+          !publicCmds.some((publicCmd) => publicCmd.name === cmd.name)
+        ) {
+          const user = await UserModel.findOne({ uId: cmd.userId }).exec();
+          publicCmds.push({ ...cmd.toObject(), user });
         }
-      });
+      }
     }
 
     this.success(
@@ -50,13 +57,14 @@ export default class CommandController extends BaseController {
 
     const allCommands = await CommandsModel.find({ userId });
 
-    this.success(
-      res,
-      "--allCommands/success",
-      `Command saved`,
-      200,
-      allCommands
-    );
+    const cmds = [];
+
+    for (const cmd of allCommands) {
+      const user = await UserModel.findOne({ uId: cmd.userId }).exec();
+      cmds.push({ ...cmd.toObject(), user });
+    }
+
+    this.success(res, "--allCommands/success", `Command saved`, 200, cmds);
   }
 
   async createInAppCmd(req: NextApiRequest, res: NextApiResponse) {
@@ -385,6 +393,11 @@ export default class CommandController extends BaseController {
       description: cmdExistsBySender?.description,
     });
 
+    await SharedCommandsModel.create({
+      senderId: cmdExistsBySender?.userId,
+      receiverId: receiver?.uId,
+    });
+
     const receipientInfo = await UserModel.findOne({
       uId: receiver.uId,
     });
@@ -395,5 +408,29 @@ export default class CommandController extends BaseController {
       `Command shared successfully to ${receipientInfo?.username} `,
       200
     );
+  }
+
+  async getSharedCommands(req: NextApiRequest, res: NextApiResponse) {
+    const userId = req["userId"];
+
+    const allCmds = await SharedCommandsModel.find({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    }).exec();
+
+    const sent =
+      allCmds.length === 0
+        ? 0
+        : allCmds.filter((c) => c.senderId === userId).length;
+    const received =
+      allCmds.length === 0
+        ? 0
+        : allCmds.filter((c) => c.receiverId === userId).length;
+
+    const comb = {
+      sent,
+      received,
+    };
+
+    this.success(res, "--sharedCmd/success", `successfully fetched`, 200, comb);
   }
 }
