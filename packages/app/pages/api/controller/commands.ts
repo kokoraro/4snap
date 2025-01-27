@@ -382,6 +382,7 @@ export default class CommandController extends BaseController {
       command: cmdExistsBySender?.command,
       public: cmdExistsBySender?.public,
       userId: receiver.uId,
+      description: cmdExistsBySender?.description,
     });
 
     const receipientInfo = await UserModel.findOne({
