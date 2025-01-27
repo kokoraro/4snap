@@ -36,8 +36,18 @@ export default function Home() {
     _id: string;
     description: string;
     public: boolean;
-  }>({ command: "", name: "", _id: "", description: "", public: false });
-
+    user: {
+      username: string;
+      fullname: string;
+    };
+  }>({
+    command: "",
+    name: "",
+    _id: "",
+    description: "",
+    public: false,
+    user: { username: "", fullname: "" },
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const totalPages = Math.ceil(allCmds.length / pageSize);
@@ -585,7 +595,27 @@ export default function Home() {
                     </span>
                     <br />
                     <br />
+                    <span className="text-white-400">{"// raw command"}</span>
+                    <br />
+                    <span className="text-white-300">$</span>
+                    <span className="text-white-100 ml-2 font-extrabold ">
+                      {selectedCmd?.command ?? ""}
+                    </span>
                   </p>
+                </div>
+                <div className="w-full py-3 mt-3 flex items-start justify-start border-t-solid border-t-[.5px] border-t-white-600 ">
+                  <ImageTag
+                    src={`https://api.dicebear.com/5.x/micah/svg?seed=${selectedCmd?.user?.username}`}
+                    className="bg-dark-200 border-solid border-[2px] border-blue-300 rounded-[100%] w-[35px] mr-2 "
+                  />
+                  <div className="w-auto flex flex-col items-start justify-start">
+                    <p className="text-white-100 pp-SB text-[13px] ">
+                      {selectedCmd?.user?.fullname}
+                    </p>
+                    <p className="text-white-300 italic pp-RG text-[12px] ">
+                      @{selectedCmd?.user?.username}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
