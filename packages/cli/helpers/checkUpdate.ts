@@ -5,7 +5,7 @@ import updateNotifier from "update-notifier";
 export default () => {
   const notifier: updateNotifier = updateNotifier({
     pkg,
-    updateCheckInterval: 1000 * 60 * 60 * 24, // 1 day
+    updateCheckInterval: 1000 * 60 * 60 * 1, // 1 hour
   });
 
   if (notifier?.update) {

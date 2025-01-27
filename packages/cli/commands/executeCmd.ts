@@ -119,30 +119,34 @@ async function executePublicCmd(commandName: string) {
         sp.start("Executing...");
 
         // execute command
-        exec(command, { cwd: process.cwd() }, (err, stdout, stderr) => {
-          if (err !== null) {
+        exec(
+          command.split(",").join(" && "),
+          { cwd: process.cwd() },
+          (err, stdout, stderr) => {
+            if (err !== null) {
+              sp.stop(
+                chalk.redBright(
+                  `Failed to execute '${chalk.underline(commandName)}': ${
+                    err ?? stderr
+                  }`
+                )
+              );
+              outro("Done");
+              return;
+            }
+
             sp.stop(
-              chalk.redBright(
-                `Failed to execute '${chalk.underline(commandName)}': ${
-                  err ?? stderr
-                }`
+              chalk.yellowBright(
+                ` ✨ Successfully executed ${chalk.bold(
+                  chalk.underline(commandName)
+                )} `
               )
             );
+            // output the given output from stdout
+            if (stdout) console.log(`\n ${stdout}`);
             outro("Done");
-            return;
           }
-
-          sp.stop(
-            chalk.yellowBright(
-              ` ✨ Successfully executed ${chalk.bold(
-                chalk.underline(commandName)
-              )} `
-            )
-          );
-          // output the given output from stdout
-          if (stdout) console.log(`\n ${stdout}`);
-          outro("Done");
-        });
+        );
       }
     }
   } catch (e: any) {
