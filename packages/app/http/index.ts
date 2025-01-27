@@ -104,3 +104,12 @@ export const retrieveAllCommands = async () => {
     return e.response.data ?? { message: e.message };
   }
 };
+
+export const retrieveSharedCommands = async () => {
+  try {
+    const res = await $http.get(`/command/getShared?id=${genRandNum()}`);
+    return res?.data ?? (res as any)?.response?.data;
+  } catch (e: any) {
+    return e.response.data ?? { message: e.message };
+  }
+};
