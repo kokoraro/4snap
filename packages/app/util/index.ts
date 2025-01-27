@@ -64,6 +64,10 @@ export function genRandNum(len: number = 10) {
 }
 
 export function isValidCliCommand(commandString) {
-  const invalidCharacters = /[!*±%^()+\[\]{}\\\/|<>~]|&{2,}|\s&|\s&&\s/g;
-  return !invalidCharacters.test(commandString);
+  // const invalidCharacters = /[!*±%^()+\[\]{}\\\/<>~]&{2,}|\s&|\s&&\s/g;
+  // return !invalidCharacters.test(commandString);
+  const invalidCharacters =
+    commandString.includes("&&") || commandString.includes("&");
+  console.log({ invalidCharacters });
+  return !invalidCharacters;
 }
