@@ -30,3 +30,12 @@ const commandsSchema = new Schema({
 
 export const CommandsModel =
   mongoose.models["Commands"] || model("Commands", commandsSchema);
+
+const sharedCommandsSchema = new Schema({
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
+});
+
+export const SharedCommandsModel =
+  mongoose.models["SharedCommands"] ||
+  model("SharedCommands", sharedCommandsSchema);
