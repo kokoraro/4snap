@@ -9,6 +9,7 @@ import {
   createInAppUser,
   getUserInfo,
   retrieveInAppCommands,
+  retrieveSharedCommands,
 } from "../../http";
 import { HandleCommandResponse, HandleUserResponse } from "../../util/response";
 import isAuthenticated from "../../util/isAuthenticated";
@@ -18,6 +19,7 @@ import { isEmpty } from "../../util";
 import { toast } from "react-hot-toast";
 import DashboardHeader from "../../components/DashboardHeader";
 import { BiCommand } from "react-icons/bi";
+import { BsArrowDownLeft, BsArrowUpRight } from "react-icons/bs";
 
 function Dashboard() {
   const isReady = useIsReady();
@@ -27,6 +29,10 @@ function Dashboard() {
     fullname: "",
   });
   const [allCmds, setAllCmds] = useState(0);
+  const [sharedCmd, setSharedCmd] = useState({
+    sent: 0,
+    received: 0,
+  });
   const [showModal, setShowModal] = useState(false);
   const userInfoQuery = useQuery({
     queryFn: async () => await getUserInfo(),
@@ -35,6 +41,10 @@ function Dashboard() {
   const getInAppCommandQuery = useQuery({
     queryFn: async () => await retrieveInAppCommands(),
     queryKey: ["getInAppCommandQuery"],
+  });
+  const getSharedCommandQuery = useQuery({
+    queryFn: async () => await retrieveSharedCommands(),
+    queryKey: ["retrieveSharedCommands"],
   });
   const createUserMutation = useMutation(async (data: any) =>
     createInAppUser(data)
@@ -104,6 +114,24 @@ function Dashboard() {
   }, [getInAppCommandQuery.data, getInAppCommandQuery]);
 
   useEffect(() => {
+    if (!isReady) return;
+    if (
+      typeof getSharedCommandQuery.data !== "undefined" ||
+      getSharedCommandQuery.error !== null
+    ) {
+      const { data } = getSharedCommandQuery;
+      const response = data;
+      HandleCommandResponse(
+        response,
+        () => {},
+        (data) => {
+          setSharedCmd(data);
+        }
+      );
+    }
+  }, [getSharedCommandQuery.data, getSharedCommandQuery]);
+
+  useEffect(() => {
     if (
       typeof createUserMutation.data !== "undefined" ||
       createUserMutation.error !== null
@@ -125,14 +153,16 @@ function Dashboard() {
   return (
     <MainDashboardLayout activeTab="dashboard">
       <DashboardHeader />
-      {!isReady || userInfoQuery.isLoading ? (
+      {!isReady ||
+      userInfoQuery.isLoading ||
+      getSharedCommandQuery.isLoading ? (
         <div className="w-full h-auto mt-6 flex flex-col items-center justify-center">
           <Spinner color="#3F7EEE" />
         </div>
       ) : (
         <div className="w-full relative h-auto px-[2em] flex flex-col items-start justify-between gap-7">
           <div className="w-full flex flex-col items-start justify-around">
-            <div className="w-full absolute top-[-40px] flex items-center justify-between gap-5">
+            <div className="w-full absolute top-[-40px] left-10 flex items-center justify-start gap-5">
               <AnalyticsCard
                 // data={siteViews}
                 title="Command Lists"
@@ -140,6 +170,20 @@ function Dashboard() {
                   <BiCommand className="p-1 text-white-400 text-3xl rounded-md" />
                 }
                 count={allCmds}
+              />
+              <AnalyticsCard
+                title="Sent CMD"
+                Icon={
+                  <BsArrowUpRight className="p-1 text-green-400 text-3xl rounded-md" />
+                }
+                count={sharedCmd.sent}
+              />
+              <AnalyticsCard
+                title="Received CMD"
+                Icon={
+                  <BsArrowDownLeft className="p-1 text-blue-300 text-3xl rounded-md" />
+                }
+                count={sharedCmd.received}
               />
             </div>
           </div>
@@ -205,7 +249,7 @@ interface AnanlyticsCardProps {
 
 function AnalyticsCard({ title, Icon, data, count }: AnanlyticsCardProps) {
   return (
-    <div className="w-[300px] h-[150px] px-5 py-5 rounded-md bg-dark-200 flex flex-col items-start justify-start gap-5  relative overflowHidden shadow-lg border-[1px] border-solid border-white-600 ">
+    <div className="w-[200px] max-w-[250px] h-full max-h-[150px] px-5 py-5 rounded-md bg-dark-200 flex flex-col items-start justify-start gap-5  relative overflowHidden shadow-lg border-[1px] border-solid border-white-600 ">
       <div className="w-full z-[10] ">
         <div className="top w-full flex items-center justify-between gap-2">
           <div className="flex items-center justify-start ">
