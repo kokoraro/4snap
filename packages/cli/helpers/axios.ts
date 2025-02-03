@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import storage from "../config/index.js";
 
-const baseURL = `https://4snapp.vercel.app/api`;
-// const baseURL = `http://localhost:3000/api`;
+// const baseURL = `https://4snapp.vercel.app/api`;
+const baseURL = `http://localhost:3000/api`;
 
 const $http: AxiosInstance = axios.create({
   baseURL,
