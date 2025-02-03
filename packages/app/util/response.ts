@@ -122,6 +122,13 @@ export function HandleCommandResponse(
     return;
   }
 
+  if (response?.code === "--sharedCmd/success") {
+    resetState();
+    successfull && successfull();
+    returnData(response?.data);
+    return;
+  }
+
   if (response?.code === "--createInAppCommand/success") {
     toast.success(response?.message);
     resetState();
