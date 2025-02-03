@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --passage-login-input-color: #000;
+  /* ... more variables ... */
+}
+
 @font-face {
   font-family: Poppins-Regular;
   src: url("/fonts/Poppins-Regular.ttf");
@@ -380,6 +385,8 @@ passage-auth {
   /* Email and Phone Input Box Styles */
   --passage-control-border-radius: 5px;
   --passage-control-border-color: #dbdbdb;
+  --passage-control-text-color: red;
+  --passage-control-border-radius: 30px;
 }
 
 passage-profile,
@@ -400,4 +407,8 @@ passage-auth::part(input) {
   width: 100%;
   border-radius: 30px;
   margin-top: 10px;
+}
+
+passage-auth input {
+  color: #000 !important;
 }
