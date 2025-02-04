@@ -21,7 +21,7 @@ export const SettingsModel =
   mongoose.models["Settings"] || model("Settings", settingsSchema);
 
 const commandsSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true },
   name: { type: String, required: true },
   command: { type: String, required: true },
   description: { type: String, required: true },
